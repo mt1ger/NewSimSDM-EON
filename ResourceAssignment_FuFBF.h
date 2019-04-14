@@ -14,6 +14,7 @@ class ResourceAssignment {
 
 		list< vector<int> > AvailableSpecSlots;
 
+		void sort_sections (list< vector<int> > &OriginalList);
 		void handle_requests (CircuitRequest * circuitRequest);
 		void handle_releases (CircuitRelease * circuitRelease);
 		void check_availability_source (unsigned int predecessor, unsigned int successor, CircuitRequest * circuitRequest);

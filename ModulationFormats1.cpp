@@ -5,11 +5,9 @@
 using namespace std;
 
 /****************************************
- * Modulation Format VS Reachability:
- * BPSK:       5540km   1bit/symbol
- * QPSK:       5540km   2bits/symbol
- * 16QAM:      2375km   4bits/symbol
- * 64QAM:      916km    6bits/symbol
+ * Options for Super Channels: 25 50 100
+ * Options for Modulation Formats: 
+ *     QPSK, 16QAM, 64QAM  
  ****************************************/
 
 

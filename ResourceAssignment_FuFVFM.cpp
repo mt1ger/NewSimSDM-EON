@@ -170,14 +170,13 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 	vector< vector<int> > AssignedSS;
 	vector< vector<int> > TempSS;
 	unsigned int NumofGB = 0;
-	unsigned int NumofTransponders = 0; // The real used number of transponders - number of guardbands
 	string MF = "QPSK";
 	unsigned int mfTimes = 0, NumofOccupiedSpectralSlots;
-	int NumofNeedGB = 0; // The number equals the demand bit rate divide the super channel bit rate 
 	unsigned int BitRate;
 	int TempCore = -1;
 	int TempSpecSlot = -1;
 	unsigned int core;
+
 
 	CircuitRoute = routingTable.get_shortest_path (circuitRequest->Src, circuitRequest->Dest);
 
@@ -199,7 +198,6 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 		}
 	}
 	#endif
-
 
 	/**** Check Available Resources, Make and Sort Sections ****/
 	check_availability_source (CircuitRoute[0], CircuitRoute[1], circuitRequest);
@@ -348,7 +346,6 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 
 		if (TempCnt > 1)
 		{
-			// need to be modified.
 			list<int> TempSCSizesforSorting;
 			for (int i = 0; i < TempIndexs.size (); i++)
 			{
@@ -472,6 +469,8 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 				}
 			}
 		}
+		if (BitRate == 0)
+			break;
 		if (AvailableFlag == false)
 			break;
 		else 
@@ -486,13 +485,15 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 				{
 					i++;
 				}
+				else if (BitRate <= 25)
+					i = 1;
 			}
 		}
 	}
-	if (BitRate > 0)
-	{
-		AvailableFlag = false;
-	}
+	// if (BitRate > 0)
+	// {
+	// 	AvailableFlag = false;
+	// }
 	if (AssignedSpectralSection.size () > network->SectionNumLimitation) AvailableFlag = false;
 	
 	
@@ -519,8 +520,6 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 		int temp = AssignedSpectralSection[0][0];
 		int CoreCnter = 1;
 		for (int i = 0; i < AssignedSpectralSection.size (); i++) {
-			int NumofSlots = AssignedSpectralSection[i][2] - AssignedSpectralSection[i][1];
-			NumofTransponders = ceil (NumofSlots * 12.5 * mfTimes / 100) - 1;
 			for (int p = 1; p < CircuitRoute.size (); p++) {
 				for (int j = AssignedSpectralSection[i].at (1); j <= AssignedSpectralSection[i].at (2); j++) {
 					network->SpectralSlots[CircuitRoute[p -1]][CircuitRoute[p]][AssignedSpectralSection[i].at (0)][j] = true;
@@ -547,7 +546,6 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 			{
 				if (AssignedSpectralSection[i][3] == SCSizes.at (j)) 
 					cout << "  MF: " <<  MFormat.at (j) << endl;
-
 			}
 		}
 
@@ -558,7 +556,7 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 		#endif
 
 		CircuitRelease * circuitRelease;
-		circuitRelease = new CircuitRelease (circuitRequest->EventID, CircuitRoute, AssignedSpectralSection, circuitRequest->StartTime + circuitRequest->Duration, NumofTransponders + NumofGB);
+		circuitRelease = new CircuitRelease (circuitRequest->EventID, CircuitRoute, AssignedSpectralSection, circuitRequest->StartTime + circuitRequest->Duration, NumofGB);
 		eventQueue->queue_insert (circuitRelease);
 
 		network->NumofAllocatedRequests++;
