@@ -8,8 +8,8 @@
 #include "TrafficGenerator.h"
 #include "Event.h"
 
-// #include "ResourceAssignment_FuFBF.h"
-#include "ResourceAssignment_FuFVF.h"
+#include "ResourceAssignment_FuFBF.h"
+// #include "ResourceAssignment_FuFVF.h"
 // #include "ResourceAssignment_IsolatedCore.h"
 // #include "ResourceAssignment_ICM.h"
 // #include "ResourceAssignment_FullyFlex.h"
@@ -51,13 +51,15 @@ void Network::init () {
 	NumofFailedRequests = 0;
 	NumofAllocatedRequests = 0;
 	NumofTransponders = 0;
+	NumofSS4Data = 0;
 	MaxNumofTransponders = 0;
+	MaxNumofSS4Data = 0;
 
 	TotalHoldingTime = 0;
 	TotalTranspondersUsed = 0;
 	TotalCoresUsed = 0;
 	TotalGBUsed = 0;
-	TotalSSUsed = 0;
+	TotalSS4Data= 0;
 	TotalSSOccupied = 0;
 	TotalDataSize = 0;
 	AvgExtFrag = 0;
@@ -109,6 +111,7 @@ void Network::simulation () {
 		eventQueue->ev_Queue.pop_front (); //This will destroy the poped Event *.
 		if (NumofTransponders > MaxNumofTransponders) MaxNumofTransponders = NumofTransponders;
 		if (NumofSections > MaxNumofSections) MaxNumofSections = NumofSections;
+		if (NumofSS4Data > MaxNumofSS4Data) MaxNumofSS4Data = NumofSS4Data;
 
 	#ifdef DEBUG_probe_NumofDoneReqeusts_and_NumofRequests
 		cout << " " << NumofDoneRequests << " and " << NumofRequests << endl;
@@ -125,15 +128,18 @@ void Network::simulation () {
 	cout << endl;
 	#endif
 	
+	SpectrumUtilization = (double) MaxNumofSS4Data / NUMOFSPECTRALSLOTS;  
 	AvgHoldingTime = TotalHoldingTime / NumofAllocatedRequests;
 	AvgTranspondersUsed = (double) TotalTranspondersUsed / NumofAllocatedRequests;
 	AvgCoresUsed = (double) TotalCoresUsed / NumofAllocatedRequests;
 	AvgGBUsed = (double) TotalGBUsed / NumofAllocatedRequests;
-	AvgIntFrag = (1 - ((double) TotalDataSize / (TotalSSUsed * BW_SPECSLOT)));
-	AvgExtFrag = (1 - (double) TotalSSUsed / TotalSSOccupied);
+	AvgIntFrag = (1 - ((double) TotalDataSize / (TotalSS4Data * BW_SPECSLOT)));
+	AvgExtFrag = (1 - (double) TotalSS4Data / TotalSSOccupied);
 	AvgHybridFrag = (1 - (double) TotalDataSize / (TotalSSOccupied * BW_SPECSLOT));
 
 
+	cout << "Spectrum Utilization is: " << SpectrumUtilization << endl;
+	cout << "Utilization of different SCs (100 50 25): " << Numof100SC << ' ' << Numof50SC << ' ' << Numof25SC << endl;
 	cout << "Max # of Transponders used: " << MaxNumofTransponders << endl;
 	cout << "Max # of Sections used for each request: " << MaxNumofSections << endl;
 	cout << "# of blocked requests is " << NumofFailedRequests << endl;

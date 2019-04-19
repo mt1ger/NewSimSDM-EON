@@ -29,7 +29,6 @@ int main () {
 	static unsigned int NumofRequests = NUMOFREQUESTS;
 	static string Exec = "/home/mt1ger/Desktop/Simulator/SimSDM-EON/Sim_FuFVFM"; 
 	static string Topo = "/home/mt1ger/Desktop/Simulator/SimSDM-EON/Topology/NSF14.txt";
-	// static string Topo = "~/Desktop/Simulator/SimSDM-EON/Topology/Test.txt";
 	static string Path = "/home/mt1ger/Desktop/Simulator/SimSDM-EON/Plot_FuFVFM/";
 	unsigned int cnt = 0;
 	string Filename;

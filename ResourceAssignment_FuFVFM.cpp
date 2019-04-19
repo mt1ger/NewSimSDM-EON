@@ -268,9 +268,11 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 	
 	/** Sort the Sections in PotentialSections by its size from bigger to smaller **/
 	list< vector<int> > SortedSections;
+	list< vector<int> > SortedSections1;
 	list< vector<int> >::iterator Index;
 	SortedSections = PotentialSections;
 	sort_sections (SortedSections);
+	SortedSections1 = SortedSections;
 
 	/*** Sort SC Options by their performance from high to low ***/
 	vector<int> SCSSs; // The needed SS for non-modulated Super Channel options
@@ -379,7 +381,8 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 	#endif 
 
 	
-	/** Pre-Allocation **/
+	/*** Pre-Allocation ***/
+	/** Normal Mode **/
 	int MainLoopIndex; // The index of the SC that has the highest performance
 	vector<int> AllocatedIndex;
 	for (int i = 0; i < SCSizes.size (); i++)
@@ -490,10 +493,99 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 			}
 		}
 	}
-	// if (BitRate > 0)
-	// {
-	// 	AvailableFlag = false;
-	// }
+
+	/** Limited Segment Mode **/
+	if (AssignedSpectralSection.size () > network->SectionNumLimitation) 
+	{
+		AssignedSpectralSection.clear ();
+		BitRate = circuitRequest->DataSize;
+
+		Index = SortedSections1.begin (); 
+		NumofGB = 0;
+		bool BiggerFlag = false;
+		bool SmallerFlag = false;
+		int i; // Index of SCMSSs and SCSizes
+
+		if (circuitRequest->DataSize > 50 && circuitRequest->DataSize <= 100)
+			i = SCSizes.size () - 1;
+		else if (circuitRequest->DataSize > 25 && circuitRequest->DataSize <= 50)
+			i = 1;
+		if (circuitRequest->DataSize <= 25)
+			i = 0;
+
+		unsigned int TempSCSS = SCMSSs.at (i);
+		unsigned int TempSCSize = SCSizes.at (i);
+
+		if (SortedSections1.empty ()) {
+			AvailableFlag = false;
+		}
+		while (BitRate > 0) {
+			if (Index == SortedSections1.end ()) {
+				if (BiggerFlag == true) {
+					Index--;
+					SmallerFlag = true;
+					continue;
+				}
+			}
+			else if (Index->at (2) - Index->at (1) + 1 == TempSCSS + GB) {
+				HAssignedSpectralSection.push_back (Index->at (0));
+				HAssignedSpectralSection.push_back (Index->at (1));
+				HAssignedSpectralSection.push_back (Index->at (2));
+				HAssignedSpectralSection.push_back (SCSizes.at (i));
+				AssignedSpectralSection.push_back (HAssignedSpectralSection);
+				HAssignedSpectralSection.clear ();
+				if (BitRate >= SCSizes.at (i))
+					BitRate -= SCSizes.at (i);
+				else
+					BitRate = 0;
+				Index = SortedSections1.erase (Index);
+				NumofGB++;
+				break;
+			}
+			else if (Index->at (2) - Index->at (1) + 1 > TempSCSS + GB) {
+				BiggerFlag = true;
+				if (SmallerFlag == true) {
+					HAssignedSpectralSection.push_back (Index->at (0));
+					HAssignedSpectralSection.push_back (Index->at (1));
+					HAssignedSpectralSection.push_back (Index->at (1) + TempSCSS + GB - 1); 
+					HAssignedSpectralSection.push_back (SCSizes.at (i));
+					AssignedSpectralSection.push_back (HAssignedSpectralSection);
+					HAssignedSpectralSection.clear ();
+					if (BitRate >= SCSizes.at (i))
+						BitRate -= SCSizes.at (i);
+					else
+						BitRate = 0;
+					if (Index->at (2) - (Index->at (1) + TempSCSS + GB) + 1 >= 2)
+					{
+						HAssignedSpectralSection.push_back (Index->at (0));
+						HAssignedSpectralSection.push_back (Index->at (1) + TempSCSS + GB);
+						HAssignedSpectralSection.push_back (Index->at (2)); 
+						SortedSections1.push_back (HAssignedSpectralSection);
+						Index = SortedSections1.erase (Index);
+						sort_sections (SortedSections1);
+						HAssignedSpectralSection.clear ();
+					}
+					else
+						Index = SortedSections1.erase (Index);
+					NumofGB++;
+					break;
+				}
+				Index++;
+			}
+			else if (Index->at (2) - Index->at (1) + 1 < TempSCSS + GB) {
+				if (BiggerFlag == true) {
+					Index--;
+					SmallerFlag = true;
+					continue;
+				}
+				else
+				{
+					AvailableFlag = false;
+					break;
+				}
+			}
+		}
+	}
 	if (AssignedSpectralSection.size () > network->SectionNumLimitation) AvailableFlag = false;
 	
 	
@@ -559,6 +651,17 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 		circuitRelease = new CircuitRelease (circuitRequest->EventID, CircuitRoute, AssignedSpectralSection, circuitRequest->StartTime + circuitRequest->Duration, NumofGB);
 		eventQueue->queue_insert (circuitRelease);
 
+		for (int i = 0; i < AssignedSpectralSection.size (); i++) {
+			if (AssignedSpectralSection[i][3] == 25)
+				network->Numof25SC++;
+			else if (AssignedSpectralSection[i][3] == 50)
+				network->Numof50SC++;
+			else if (AssignedSpectralSection[i][3] == 100)
+				network->Numof100SC++;
+			network->NumofSS4Data += AssignedSpectralSection[i][2] - AssignedSpectralSection[i][1];
+			network->TotalSS4Data += AssignedSpectralSection[i][2] - AssignedSpectralSection[i][1];
+			network->TotalSSOccupied += AssignedSpectralSection[i][2] - AssignedSpectralSection[i][1] + 1;
+		}
 		network->NumofAllocatedRequests++;
 		network->NumofSections = network->SectionNumLimitation;
 		network->TotalHoldingTime += circuitRequest->Duration;
@@ -567,8 +670,6 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 		network->TotalCoresUsed += CoreCnter;
 		network->TotalGBUsed += NumofGB;
 		network->TotalDataSize += circuitRequest->DataSize;
-		network->TotalSSUsed += NumofOccupiedSpectralSlots * mfTimes;
-		network->TotalSSOccupied += (NumofOccupiedSpectralSlots + NumofGB) * mfTimes;
 	}
 
 	#ifdef DEBUG_print_resource_state_on_the_path
@@ -619,6 +720,10 @@ void ResourceAssignment::handle_releases (CircuitRelease * circuitRelease) {
 		}
 	}
 
+	for (int i = 0; i < circuitRelease->OccupiedSpectralSection.size (); i++)
+	{
+		network->NumofSS4Data -= circuitRelease->OccupiedSpectralSection[i][2] - circuitRelease->OccupiedSpectralSection[i][1] + 1;
+	}
 	network->NumofDoneRequests++;
 	network->NumofTransponders = network->NumofTransponders - circuitRelease->TranspondersUsed;
 

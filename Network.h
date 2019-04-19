@@ -6,7 +6,7 @@
 // #include "RoutingTable.h"
 #include "EventQueue.h"
 
-#define TESTING
+// #define TESTING
 
 #ifdef TESTING
 // #define DEBUG_print_resource_state_on_the_path
@@ -24,8 +24,8 @@
 #define GB 1 // Guardband
 #define NUMOFSPECTRALSLOTS 128
 // #define NUMOFSPECTRALSLOTS 16
-#define MAX_DATASIZE_REQUEST 200 
-// #define MAX_DATASIZE_REQUEST 50 
+// #define MAX_DATASIZE_REQUEST 200 
+#define MAX_DATASIZE_REQUEST 100 
 #define BW_SPECSLOT 12.5
 
 using namespace std;
@@ -61,11 +61,12 @@ class Network {
 		double AvgTranspondersUsed;
 		double AvgGBUsed;
 		double AvgCoresUsed;	
+		double SpectrumUtilization;
 
 
 		// Metrics to Measure Fregmentation 
 		long long TotalDataSize;
-		long long TotalSSUsed;
+		long long TotalSS4Data;
 		long long TotalSSOccupied;
 
 		double AvgIntFrag;
@@ -78,7 +79,12 @@ class Network {
 		long long NumofDoneRequests; // Requests which are successfully allocated and released, or blocked will be considered as DoneRequests
 		long long NumofFailedRequests; // Number of Requests that are blocked
 		long long NumofTransponders; // Number of TranspondersUsed at a Specific Time
+		long long NumofSS4Data;
 		long long MaxNumofTransponders; // For one time simulation, Maximum Number of Transponders Used Simultaneously
+		long long MaxNumofSS4Data; // For one time simulation, Maximum Number of Data Spectral Slot Occupation
+		long long Numof100SC; // number of 100Gb/s super channel used per simulation
+		long long Numof50SC; // number of 50Gb/s super channel used per simulation
+		long long Numof25SC; // number of 25Gb/s super channel used per simulation
 		int NumofSections;
 		int MaxNumofSections;
 		double SystemClock;
