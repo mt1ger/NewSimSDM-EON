@@ -119,3 +119,13 @@ Version 1.3:
 
 **************************************************
 
+
+
+
+04/19/2019
+1. Now the Max Bit Rate of request is 100.
+2. SC options are: 100, 50, 25
+3. MF options are: QPSK, 16QAM 
+
+
+

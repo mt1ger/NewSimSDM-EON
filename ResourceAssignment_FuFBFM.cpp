@@ -165,12 +165,9 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 	vector<int> HAssignedSpectralSection;
 	vector<int> HPotentialSections;
 	list< vector<int> > PotentialSections;
-	vector<int> HAssignedSS;
-	vector< vector<int> > AssignedSS;
-	vector< vector<int> > TempSS;
 	unsigned int NumofGB = 0;
 	string MF = "QPSK";
-	unsigned int mfTimes = 0, NumofOccupiedSpectralSlots;
+	unsigned int mfTimes = 0;
 	unsigned int BitRate;
 	int TempCore = -1;
 	int TempSpecSlot = -1;
@@ -301,6 +298,7 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 	}
 	cout << endl;
 	#endif 
+
 
 	/*** Sort SC Options by their performance form high to low ***/
 	vector<int> SCSSs; // The needed SS for non-modulated Super Channel options

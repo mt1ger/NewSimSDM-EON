@@ -586,6 +586,7 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 			}
 		}
 	}
+
 	if (AssignedSpectralSection.size () > network->SectionNumLimitation) AvailableFlag = false;
 	
 	
@@ -633,7 +634,7 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 		cout << CircuitRoute.at (CircuitRoute.size() - 1) << endl;
 
 		for (int i = 0; i < AssignedSpectralSection.size (); i++) {
-			cout << "Core: " << AssignedSpectralSection[i][0] << "  Spectral Section: " << AssignedSpectralSection[i][1] << " to " << AssignedSpectralSection[i][2] << "  SC: " << AssignedSpectralSection[i][3] << ' '; 
+			cout << "Core: " << AssignedSpectralSection[i][0] << "  Spectral Section: " << AssignedSpectralSection[i][1] << " to " << AssignedSpectralSection[i][2] << "  SC: " << AssignedSpectralSection[i][3]; 
 			for (int j = 0; j < SCSizes.size (); j++)
 			{
 				if (AssignedSpectralSection[i][3] == SCSizes.at (j)) 
