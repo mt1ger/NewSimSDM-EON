@@ -435,7 +435,7 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 				HAssignedSpectralSection.push_back (Index->at (0));
 				HAssignedSpectralSection.push_back (Index->at (1));
 				HAssignedSpectralSection.push_back (Index->at (2));
-				HAssignedSpectralSection.push_back (SCSizes.at (i));
+				HAssignedSpectralSection.push_back (i);
 				AssignedSpectralSection.push_back (HAssignedSpectralSection);
 				Index = SortedSections.erase (Index);
 				HAssignedSpectralSection.clear ();
@@ -450,7 +450,7 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 				HAssignedSpectralSection.push_back (Index->at (0));
 				HAssignedSpectralSection.push_back (Index->at (1));
 				HAssignedSpectralSection.push_back (Index->at (1) + TempSCSS + GB - 1); 
-				HAssignedSpectralSection.push_back (SCSizes.at (i));
+				HAssignedSpectralSection.push_back (i);
 				AssignedSpectralSection.push_back (HAssignedSpectralSection);
 				HAssignedSpectralSection.clear ();
 				if (BitRate >= SCSizes.at (i))
@@ -536,7 +536,7 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 				HAssignedSpectralSection.push_back (Index->at (0));
 				HAssignedSpectralSection.push_back (Index->at (1));
 				HAssignedSpectralSection.push_back (Index->at (2));
-				HAssignedSpectralSection.push_back (SCSizes.at (i));
+				HAssignedSpectralSection.push_back (i);
 				AssignedSpectralSection.push_back (HAssignedSpectralSection);
 				HAssignedSpectralSection.clear ();
 				if (BitRate >= SCSizes.at (i))
@@ -553,7 +553,7 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 					HAssignedSpectralSection.push_back (Index->at (0));
 					HAssignedSpectralSection.push_back (Index->at (1));
 					HAssignedSpectralSection.push_back (Index->at (1) + TempSCSS + GB - 1); 
-					HAssignedSpectralSection.push_back (SCSizes.at (i));
+					HAssignedSpectralSection.push_back (i);
 					AssignedSpectralSection.push_back (HAssignedSpectralSection);
 					HAssignedSpectralSection.clear ();
 					if (BitRate >= SCSizes.at (i))
@@ -634,12 +634,7 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 		cout << CircuitRoute.at (CircuitRoute.size() - 1) << endl;
 
 		for (int i = 0; i < AssignedSpectralSection.size (); i++) {
-			cout << "Core: " << AssignedSpectralSection[i][0] << "  Spectral Section: " << AssignedSpectralSection[i][1] << " to " << AssignedSpectralSection[i][2] << "  SC: " << AssignedSpectralSection[i][3]; 
-			for (int j = 0; j < SCSizes.size (); j++)
-			{
-				if (AssignedSpectralSection[i][3] == SCSizes.at (j))
-					cout << "  MF: " << MFormat.at (j) << endl;
-			}
+			cout << "Core: " << AssignedSpectralSection[i][0] << "  Spectral Section: " << AssignedSpectralSection[i][1] << " to " << AssignedSpectralSection[i][2] << "  SC: " << SCSizes.at (AssignedSpectralSection[i].at (3)) << "  MF: " << MFormat.at (AssignedSpectralSection[i][3]) << endl;
 		}
 
 		cout << "# of Guardbands Used: " << NumofGB << endl;
@@ -654,12 +649,22 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 
 
 		for (int i = 0; i < AssignedSpectralSection.size (); i++) {
-			if (AssignedSpectralSection[i][3] == 25)
+			if (SCSizes.at (AssignedSpectralSection[i][3]) == 25)
 				network->Numof25SC++;
-			else if (AssignedSpectralSection[i][3] == 50)
-				network->Numof50SC++;
-			else if (AssignedSpectralSection[i][3] == 100)
-				network->Numof100SC++;
+			else if (SCSizes.at (AssignedSpectralSection[i][3]) == 50)
+			{
+				if (MFormat.at (AssignedSpectralSection[i][3]) == "QPSK")
+					network->Numof50SC2++;
+				else if (MFormat.at (AssignedSpectralSection[i][3]) == "16QAM")
+					network->Numof50SC4++;
+			}
+			else if (SCSizes.at (AssignedSpectralSection[i][3]) == 100)
+			{
+				if (MFormat.at (AssignedSpectralSection[i][3]) == "QPSK")
+					network->Numof100SC2++;
+				else if (MFormat.at (AssignedSpectralSection[i][3]) == "16QAM")
+					network->Numof100SC4++;
+			}
 			network->NumofSS4Data += AssignedSpectralSection[i][2] - AssignedSpectralSection[i][1];
 			network->TotalSS4Data += AssignedSpectralSection[i][2] - AssignedSpectralSection[i][1];
 			network->TotalSSOccupied += AssignedSpectralSection[i][2] - AssignedSpectralSection[i][1] + 1;

@@ -55,11 +55,11 @@ void ResourceAssignment::check_availability_link (vector<int> * CircuitRoute) {
 	#endif
 }
 
-
 void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 	RoutingTable routingTable (network);	
 	ModulationFormats modulationFormats (circuitRequest, network);
 
+	/*** VARIABLES ***/
 	vector<int> CircuitRoute;
 	bool AvailableFlag = true;
 	vector< vector<int> > AssignedSpectralSection;
@@ -166,6 +166,7 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 
 		SortedSections = PotentialSections;
 
+
 	/*** Sort SC Options by their performance form high to low ***/
 	vector<int> SCSSs; // The needed SS for non-modulated Super Channel options
 	vector<int> SCSizes; // The bit rate for each super channel
@@ -263,6 +264,7 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 		}
 
 	}
+
 	#ifdef DEBUG_print_SortedSC
 	cout << "\033[0;32mPRINT\033[0m " << "Sorted Super Channels" << endl;
 	for (int i = 0; i < SortedSCSizes.size (); i++) {
@@ -274,6 +276,7 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 	/*** Pre-Allocation ***/
 	int MainLoopIndex; // The index of the SC that has the highest performance
 	list< vector<int> >::iterator Index;
+	/** Normal Mode **/
 	for (int i = 0; i < SCSizes.size (); i++)
 	{
 		if (SortedSCSizes.at (0) == SCSizes.at (i))
@@ -310,7 +313,7 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 					HAssignedSpectralSection.push_back (Index->at (0));
 					HAssignedSpectralSection.push_back (Index->at (1));
 					HAssignedSpectralSection.push_back (Index->at (2));
-					HAssignedSpectralSection.push_back (SCSizes.at (i));
+					HAssignedSpectralSection.push_back (i);
 					AssignedSpectralSection.push_back (HAssignedSpectralSection);
 					HAssignedSpectralSection.clear ();
 					if (BitRate >= SCSizes.at (i))
@@ -337,7 +340,7 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 					HAssignedSpectralSection.push_back (Index->at (0));
 					HAssignedSpectralSection.push_back (Index->at (1));
 					HAssignedSpectralSection.push_back (Index->at (1) + SCMSSs.at (i) + GB - 1);
-					HAssignedSpectralSection.push_back (SCSizes.at (i));
+					HAssignedSpectralSection.push_back (i);
 					AssignedSpectralSection.push_back (HAssignedSpectralSection);
 					HAssignedSpectralSection.clear ();
 					if (BitRate >= SCSizes.at (i))
@@ -370,7 +373,6 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 				}
 				else if (Index->at (2) - Index->at (1) < SCMSSs.at (i))
 					Index++;
-			// }
 		}
 		if (BitRate == 0)
 			break;
@@ -395,6 +397,8 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 			}
 		}
 	}
+
+	/** Segment Limitation Mode **/
 	if (AssignedSpectralSection.size () > network->SectionNumLimitation)
 	{
 		cout << "Seg # exceeds limitation" << endl;
@@ -402,6 +406,7 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 		AssignedSpectralSection.clear ();
 		BitRate = circuitRequest->DataSize;
 		SortedSections1 = PotentialSections;
+		NumofGB = 0;
 		Index = SortedSections1.begin ();
 		int i;
 
@@ -436,7 +441,7 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 				HAssignedSpectralSection.push_back (Index->at (0));
 				HAssignedSpectralSection.push_back (Index->at (1));
 				HAssignedSpectralSection.push_back (Index->at (2));
-				HAssignedSpectralSection.push_back (SCSizes.at (i));
+				HAssignedSpectralSection.push_back (i);
 				AssignedSpectralSection.push_back (HAssignedSpectralSection);
 				HAssignedSpectralSection.clear ();
 				if (BitRate >= SCSizes.at (i))
@@ -449,7 +454,7 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 				HAssignedSpectralSection.push_back (Index->at (0));
 				HAssignedSpectralSection.push_back (Index->at (1));
 				HAssignedSpectralSection.push_back (Index->at (1) + SCMSSs.at (i) + GB - 1);
-				HAssignedSpectralSection.push_back (SCSizes.at (i));
+				HAssignedSpectralSection.push_back (i);
 				AssignedSpectralSection.push_back (HAssignedSpectralSection);
 				HAssignedSpectralSection.clear ();
 				if (BitRate >= SCSizes.at (i))
@@ -470,9 +475,9 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 			}
 			else if (Index->at (2) - Index->at (1) < SCMSSs.at (i))
 				Index++;
-			// }
 		}
 	}
+
 	if (AssignedSpectralSection.size () > network->SectionNumLimitation) AvailableFlag = false;
 
 	if (AvailableFlag == false) {
@@ -518,12 +523,7 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 		cout << CircuitRoute.at (CircuitRoute.size() - 1) << endl;
 
 		for (int i = 0; i < AssignedSpectralSection.size (); i++) {
-			cout << "Core: " << AssignedSpectralSection[i][0] << "  Spectral Section: " << AssignedSpectralSection[i][1] << " to " << AssignedSpectralSection[i][2] << "  SC: " << AssignedSpectralSection[i][3];   
-			for (int j = 0; j < SCSizes.size (); j++)
-			{
-				if (AssignedSpectralSection[i][3] == SCSizes.at (j))
-					cout << "  MF: " << MFormat.at (j) << endl;
-			}
+			cout << "Core: " << AssignedSpectralSection[i][0] << "  Spectral Section: " << AssignedSpectralSection[i][1] << " to " << AssignedSpectralSection[i][2] << "  SC: " << SCSizes.at (AssignedSpectralSection[i][3]) << "  MF: " << MFormat.at (AssignedSpectralSection[i][3]) << endl;   
 		}
 
 		cout << "# of Guardbands Used: " << NumofGB << endl;
@@ -537,12 +537,22 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 		eventQueue->queue_insert (circuitRelease);
 
 		for (int i = 0; i < AssignedSpectralSection.size (); i++) {
-			if (AssignedSpectralSection[i][3] == 25)
+			if (SCSizes.at (AssignedSpectralSection[i][3]) == 25)
 				network->Numof25SC++;
-			else if (AssignedSpectralSection[i][3] == 50)
-				network->Numof50SC++;
-			else if (AssignedSpectralSection[i][3] == 100)
-				network->Numof100SC++;
+			else if (SCSizes.at (AssignedSpectralSection[i][3]) == 50)
+			{
+				if (MFormat.at (AssignedSpectralSection[i][3]) == "QPSK")
+					network->Numof50SC2++;
+				else if (MFormat.at (AssignedSpectralSection[i][3]) == "16QAM")
+					network->Numof50SC4++;
+			}
+			else if (SCSizes.at (AssignedSpectralSection[i][3]) == 100)
+			{
+				if (MFormat.at (AssignedSpectralSection[i][3]) == "QPSK")
+					network->Numof100SC2++;
+				else if (MFormat.at (AssignedSpectralSection[i][3]) == "16QAM")
+					network->Numof100SC4++;
+			}
 			network->NumofSS4Data += AssignedSpectralSection[i][2] - AssignedSpectralSection[i][1];
 			network->TotalSS4Data += AssignedSpectralSection[i][2] - AssignedSpectralSection[i][1];
 			network->TotalSSOccupied += AssignedSpectralSection[i][2] - AssignedSpectralSection[i][1] + 1;

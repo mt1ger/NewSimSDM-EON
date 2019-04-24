@@ -6,7 +6,7 @@
 // #include "RoutingTable.h"
 #include "EventQueue.h"
 
-// #define TESTING
+#define TESTING
 
 #ifdef TESTING
 // #define DEBUG_print_resource_state_on_the_path
@@ -82,13 +82,17 @@ class Network {
 		long long NumofSS4Data;
 		long long MaxNumofTransponders; // For one time simulation, Maximum Number of Transponders Used Simultaneously
 		long long MaxNumofSS4Data; // For one time simulation, Maximum Number of Data Spectral Slot Occupation
-		long long Numof100SC; // number of 100Gb/s super channel used per simulation
-		long long Numof50SC; // number of 50Gb/s super channel used per simulation
-		long long Numof25SC; // number of 25Gb/s super channel used per simulation
 		int NumofSections;
 		int MaxNumofSections;
 		double SystemClock;
 
+		// Super Channel Allocation Mapping
+		long long Numof100SC4; // number of 16QAM 100Gb/s super channel used per simulation
+		long long Numof100SC2; // number of QPSK 100Gb/s super channel used per simulation
+		long long Numof50SC4; // number of 16QAM 50Gb/s super channel used per simulation
+		long long Numof50SC2; // number of QPSK 50Gb/s super channel used per simulation
+		long long Numof25SC; // number of 25Gb/s super channel used per simulation
+		
 		// Resource Variables
 		vector< vector< vector< vector<bool> > > > SpectralSlots;
 

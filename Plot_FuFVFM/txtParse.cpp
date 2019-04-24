@@ -7,16 +7,16 @@
 using namespace std;
 
 void txtParse::parse (vector<int> &PotentialCore, vector<int> &PotentialLambda, vector<int> &PotentialSeed, string path) {
-	string IFileName, IFile, OFileName1, OFileName2, OFileName3, OFileName4, OFileName5, OFileName6, OFileName7, OFileName8, OFileName9, OFileName10, OFileName11, OFileName12;
+	string IFileName, IFile, OFileName1, OFileName2, OFileName3, OFileName4, OFileName5, OFileName6, OFileName7, OFileName8, OFileName9, OFileName10, OFileName11, OFileName12, OFileName13, OFileName14;
 	IFile = "Plot";
 	IFileName = path + IFile + ".txt";
 	ifstream Fin (IFileName); 
 
-	string Core, Lambda, Seed, BP, NoT, CpR, HTpR, TpR, GBpR, AvgIFpR, AvgEFpR, AvgHFpR, Numof100SC, Numof50SC, Numof25SC;
-	double NCore, NLambda, NSeed, NBP, NNoT, NCpR, NHTpR, NTpR, NGBpR, NAvgIFpR, NAvgEFpR, NAvgHFpR, NNumof100SC, NNumof50SC, NNumof25SC;
-	vector< vector< vector<double> > > BParray, NoTarray, CpRarray, HTpRarray, TpRarray, GBpRarray, AvgIFpRarray, AvgEFpRarray, AvgHFpRarray, Numof100SCarray, Numof50SCarray, Numof25SCarray;
-	vector < vector<double> > XBParray, XNoTarray, XCpRarray, XHTpRarray, XTpRarray, XGBpRarray, XAvgIFpRarray, XAvgEFpRarray, XAvgHFpRarray, XNumof100SCarray, XNumof50SCarray, XNumof25SCarray;
-	vector<double> YBParray, YNoTarray, YCpRarray, YHTpRarray, YTpRarray, YGBpRarray, YAvgIFpRarray, YAvgEFpRarray, YAvgHFpRarray, YNumof100SCarray, YNumof50SCarray, YNumof25SCarray;
+	string Core, Lambda, Seed, BP, NoT, CpR, HTpR, TpR, GBpR, AvgIFpR, AvgEFpR, AvgHFpR, Numof100SC2, Numof100SC4, Numof50SC2, Numof50SC4, Numof25SC;
+	double NCore, NLambda, NSeed, NBP, NNoT, NCpR, NHTpR, NTpR, NGBpR, NAvgIFpR, NAvgEFpR, NAvgHFpR, NNumof100SC2, NNumof100SC4, NNumof50SC2, NNumof50SC4, NNumof25SC;
+	vector< vector< vector<double> > > BParray, NoTarray, CpRarray, HTpRarray, TpRarray, GBpRarray, AvgIFpRarray, AvgEFpRarray, AvgHFpRarray, Numof100SC2array, Numof100SC4array, Numof50SC2array, Numof50SC4array, Numof25SCarray;
+	vector < vector<double> > XBParray, XNoTarray, XCpRarray, XHTpRarray, XTpRarray, XGBpRarray, XAvgIFpRarray, XAvgEFpRarray, XAvgHFpRarray, XNumof100SC2array, XNumof100SC4array, XNumof50SC2array, XNumof50SC4array, XNumof25SCarray;
+	vector<double> YBParray, YNoTarray, YCpRarray, YHTpRarray, YTpRarray, YGBpRarray, YAvgIFpRarray, YAvgEFpRarray, YAvgHFpRarray, YNumof100SC2array, YNumof100SC4array, YNumof50SC2array, YNumof50SC4array, YNumof25SCarray;
 
 
 	for (int i = 0; i < PotentialCore.size (); i++) {
@@ -93,21 +93,37 @@ void txtParse::parse (vector<int> &PotentialCore, vector<int> &PotentialLambda, 
 			XAvgHFpRarray.push_back (YAvgHFpRarray);
 			YAvgHFpRarray.clear ();
 
-			YNumof100SCarray.push_back (PotentialCore[i]);
-			YNumof100SCarray.push_back (PotentialLambda[k]);
+			YNumof100SC2array.push_back (PotentialCore[i]);
+			YNumof100SC2array.push_back (PotentialLambda[k]);
 			for (int i = 0; i < PotentialSeed.size (); i++) {
-				YNumof100SCarray.push_back (-1);
+				YNumof100SC2array.push_back (-1);
 			}
-			XNumof100SCarray.push_back (YNumof100SCarray);
-			YNumof100SCarray.clear ();
+			XNumof100SC2array.push_back (YNumof100SC2array);
+			YNumof100SC2array.clear ();
 
-			YNumof50SCarray.push_back (PotentialCore[i]);
-			YNumof50SCarray.push_back (PotentialLambda[k]);
+			YNumof100SC4array.push_back (PotentialCore[i]);
+			YNumof100SC4array.push_back (PotentialLambda[k]);
 			for (int i = 0; i < PotentialSeed.size (); i++) {
-				YNumof50SCarray.push_back (-1);
+				YNumof100SC4array.push_back (-1);
 			}
-			XNumof50SCarray.push_back (YNumof50SCarray);
-			YNumof50SCarray.clear ();
+			XNumof100SC4array.push_back (YNumof100SC4array);
+			YNumof100SC4array.clear ();
+
+			YNumof50SC2array.push_back (PotentialCore[i]);
+			YNumof50SC2array.push_back (PotentialLambda[k]);
+			for (int i = 0; i < PotentialSeed.size (); i++) {
+				YNumof50SC2array.push_back (-1);
+			}
+			XNumof50SC2array.push_back (YNumof50SC2array);
+			YNumof50SC2array.clear ();
+
+			YNumof50SC4array.push_back (PotentialCore[i]);
+			YNumof50SC4array.push_back (PotentialLambda[k]);
+			for (int i = 0; i < PotentialSeed.size (); i++) {
+				YNumof50SC4array.push_back (-1);
+			}
+			XNumof50SC4array.push_back (YNumof50SC4array);
+			YNumof50SC4array.clear ();
 
 			YNumof25SCarray.push_back (PotentialCore[i]);
 			YNumof25SCarray.push_back (PotentialLambda[k]);
@@ -144,11 +160,17 @@ void txtParse::parse (vector<int> &PotentialCore, vector<int> &PotentialLambda, 
 		AvgHFpRarray.push_back (XAvgHFpRarray);
 		XAvgHFpRarray.clear ();
 
-		Numof100SCarray.push_back (XNumof100SCarray);
-		XNumof100SCarray.clear ();
+		Numof100SC2array.push_back (XNumof100SC2array);
+		XNumof100SC2array.clear ();
 
-		Numof50SCarray.push_back (XNumof50SCarray);
-		XNumof50SCarray.clear ();
+		Numof100SC4array.push_back (XNumof100SC4array);
+		XNumof100SC4array.clear ();
+
+		Numof50SC2array.push_back (XNumof50SC2array);
+		XNumof50SC2array.clear ();
+
+		Numof50SC4array.push_back (XNumof50SC4array);
+		XNumof50SC4array.clear ();
 
 		Numof25SCarray.push_back (XNumof25SCarray);
 		XNumof25SCarray.clear ();
@@ -172,8 +194,10 @@ void txtParse::parse (vector<int> &PotentialCore, vector<int> &PotentialLambda, 
 		Fin >> AvgIFpR;
 		Fin >> AvgEFpR;
 		Fin >> AvgHFpR;
-		Fin >> Numof100SC;
-		Fin >> Numof50SC;
+		Fin >> Numof100SC2;
+		Fin >> Numof100SC4;
+		Fin >> Numof50SC2;
+		Fin >> Numof50SC4;
 		Fin >> Numof25SC;
 
 
@@ -189,8 +213,10 @@ void txtParse::parse (vector<int> &PotentialCore, vector<int> &PotentialLambda, 
 		NAvgIFpR = stof (AvgIFpR);
 		NAvgEFpR = stof (AvgEFpR);
 		NAvgHFpR = stof (AvgHFpR);
-		NNumof100SC= stof (Numof100SC);
-		NNumof50SC= stof (Numof50SC);
+		NNumof100SC2= stof (Numof100SC2);
+		NNumof100SC4= stof (Numof100SC4);
+		NNumof50SC2= stof (Numof50SC2);
+		NNumof50SC4= stof (Numof50SC4);
 		NNumof25SC= stof (Numof25SC);
 
 		for (CoreCnt = 0; CoreCnt < PotentialCore.size (); CoreCnt++) {
@@ -215,8 +241,10 @@ void txtParse::parse (vector<int> &PotentialCore, vector<int> &PotentialLambda, 
 		AvgIFpRarray[CoreCnt][LambdaCnt].at (SeedCnt + 2) = NAvgIFpR;
 		AvgEFpRarray[CoreCnt][LambdaCnt].at (SeedCnt + 2) = NAvgEFpR;
 		AvgHFpRarray[CoreCnt][LambdaCnt].at (SeedCnt + 2) = NAvgHFpR;
-		Numof100SCarray[CoreCnt][LambdaCnt].at (SeedCnt + 2) = NNumof100SC;
-		Numof50SCarray[CoreCnt][LambdaCnt].at (SeedCnt + 2) = NNumof50SC;
+		Numof100SC2array[CoreCnt][LambdaCnt].at (SeedCnt + 2) = NNumof100SC2;
+		Numof100SC4array[CoreCnt][LambdaCnt].at (SeedCnt + 2) = NNumof100SC4;
+		Numof50SC2array[CoreCnt][LambdaCnt].at (SeedCnt + 2) = NNumof50SC2;
+		Numof50SC4array[CoreCnt][LambdaCnt].at (SeedCnt + 2) = NNumof50SC4;
 		Numof25SCarray[CoreCnt][LambdaCnt].at (SeedCnt + 2) = NNumof25SC;
 	}
 
@@ -234,8 +262,10 @@ void txtParse::parse (vector<int> &PotentialCore, vector<int> &PotentialLambda, 
 			double TempAvgIFpR = 0;
 			double TempAvgEFpR = 0;
 			double TempAvgHFpR = 0;
-			double TempNumof100SC= 0;
-			double TempNumof50SC= 0;
+			double TempNumof100SC2= 0;
+			double TempNumof100SC4= 0;
+			double TempNumof50SC2= 0;
+			double TempNumof50SC4= 0;
 			double TempNumof25SC= 0;
 
 			for (int k = 2; k < 2 + Cnt; k++) {
@@ -248,8 +278,10 @@ void txtParse::parse (vector<int> &PotentialCore, vector<int> &PotentialLambda, 
 				TempAvgIFpR += AvgIFpRarray[i][j][k];
 				TempAvgEFpR += AvgEFpRarray[i][j][k];
 				TempAvgHFpR += AvgHFpRarray[i][j][k];
-				TempNumof100SC += Numof100SCarray[i][j][k];
-				TempNumof50SC += Numof50SCarray[i][j][k];
+				TempNumof100SC2 += Numof100SC2array[i][j][k];
+				TempNumof100SC4 += Numof100SC4array[i][j][k];
+				TempNumof50SC2 += Numof50SC2array[i][j][k];
+				TempNumof50SC4 += Numof50SC4array[i][j][k];
 				TempNumof25SC += Numof25SCarray[i][j][k];
 			}
 
@@ -262,8 +294,10 @@ void txtParse::parse (vector<int> &PotentialCore, vector<int> &PotentialLambda, 
 			TempAvgIFpR = TempAvgIFpR / Cnt;
 			TempAvgEFpR = TempAvgEFpR / Cnt;
 			TempAvgHFpR = TempAvgHFpR / Cnt;
-			TempNumof100SC = TempNumof100SC/ Cnt;
-			TempNumof50SC = TempNumof50SC / Cnt;
+			TempNumof100SC2 = TempNumof100SC2/ Cnt;
+			TempNumof100SC4 = TempNumof100SC4/ Cnt;
+			TempNumof50SC2 = TempNumof50SC2 / Cnt;
+			TempNumof50SC4 = TempNumof50SC4 / Cnt;
 			TempNumof25SC = TempNumof25SC / Cnt;
 
 			BParray[i][j].push_back (TempBP);
@@ -275,8 +309,10 @@ void txtParse::parse (vector<int> &PotentialCore, vector<int> &PotentialLambda, 
 			AvgIFpRarray[i][j].push_back (TempAvgIFpR);
 			AvgEFpRarray[i][j].push_back (TempAvgEFpR);
 			AvgHFpRarray[i][j].push_back (TempAvgHFpR);
-			Numof100SCarray[i][j].push_back (TempNumof100SC);
-			Numof50SCarray[i][j].push_back (TempNumof50SC);
+			Numof100SC2array[i][j].push_back (TempNumof100SC2);
+			Numof100SC4array[i][j].push_back (TempNumof100SC4);
+			Numof50SC2array[i][j].push_back (TempNumof50SC2);
+			Numof50SC4array[i][j].push_back (TempNumof50SC4);
 			Numof25SCarray[i][j].push_back (TempNumof25SC);
 		}
 	}
@@ -291,9 +327,11 @@ void txtParse::parse (vector<int> &PotentialCore, vector<int> &PotentialLambda, 
 	OFileName7 = path + IFile + "_AvgIFpR.csv";
 	OFileName8 = path + IFile + "_AvgEFpR.csv";
 	OFileName9 = path + IFile + "_AvgHFpR.csv";
-	OFileName10 = path + IFile + "_Numof100SC.csv";
-	OFileName11 = path + IFile + "_Numof50SC.csv";
-	OFileName12 = path + IFile + "_Numof25SC.csv";
+	OFileName10 = path + IFile + "_Numof100SC2.csv";
+	OFileName11 = path + IFile + "_Numof100SC4.csv";
+	OFileName12 = path + IFile + "_Numof50SC2.csv";
+	OFileName13 = path + IFile + "_Numof50SC4.csv";
+	OFileName14 = path + IFile + "_Numof25SC.csv";
 	
 	ofstream Fbp (OFileName1);
 	ofstream Fnot (OFileName2);
@@ -304,9 +342,11 @@ void txtParse::parse (vector<int> &PotentialCore, vector<int> &PotentialLambda, 
 	ofstream Favgifpr (OFileName7);
 	ofstream Favgefpr (OFileName8);
 	ofstream Favghfpr (OFileName9);
-	ofstream Fnumof100sc (OFileName10);
-	ofstream Fnumof50sc (OFileName11);
-	ofstream Fnumof25sc (OFileName12);
+	ofstream Fnumof100sc2 (OFileName10);
+	ofstream Fnumof100sc4 (OFileName11);
+	ofstream Fnumof50sc2 (OFileName12);
+	ofstream Fnumof50sc4 (OFileName13);
+	ofstream Fnumof25sc (OFileName14);
 
 	string Sseed;
 	for (int i = 0; i < PotentialSeed.size (); i++) {
@@ -322,8 +362,10 @@ void txtParse::parse (vector<int> &PotentialCore, vector<int> &PotentialLambda, 
 	Favgifpr << Sseed;
 	Favgefpr << Sseed;
 	Favghfpr << Sseed;
-	Fnumof100sc<< Sseed;
-	Fnumof50sc << Sseed;
+	Fnumof100sc2 << Sseed;
+	Fnumof100sc4 << Sseed;
+	Fnumof50sc2 << Sseed;
+	Fnumof50sc4 << Sseed;
 	Fnumof25sc << Sseed;
 
 	for (int i = 0; i < BParray.size (); i++) {
@@ -337,8 +379,10 @@ void txtParse::parse (vector<int> &PotentialCore, vector<int> &PotentialLambda, 
 			string Savgifpr;
 			string Savgefpr;
 			string Savghfpr;
-			string Snumof100sc;
-			string Snumof50sc;
+			string Snumof100sc2;
+			string Snumof100sc4;
+			string Snumof50sc2;
+			string Snumof50sc4;
 			string Snumof25sc;
 
 			for (int k = 0; k < BParray[i][j].size (); k++) {
@@ -351,8 +395,10 @@ void txtParse::parse (vector<int> &PotentialCore, vector<int> &PotentialLambda, 
 				Savgifpr = Savgifpr + to_string (AvgIFpRarray[i][j][k]) + ','; 
 				Savgefpr = Savgefpr + to_string (AvgEFpRarray[i][j][k]) + ','; 
 				Savghfpr = Savghfpr + to_string (AvgHFpRarray[i][j][k]) + ','; 
-				Snumof100sc = Snumof100sc + to_string (Numof100SCarray[i][j][k]) + ','; 
-				Snumof50sc = Snumof50sc + to_string (Numof50SCarray[i][j][k]) + ','; 
+				Snumof100sc2 = Snumof100sc2 + to_string (Numof100SC2array[i][j][k]) + ','; 
+				Snumof100sc4 = Snumof100sc4 + to_string (Numof100SC4array[i][j][k]) + ','; 
+				Snumof50sc2 = Snumof50sc2 + to_string (Numof50SC2array[i][j][k]) + ','; 
+				Snumof50sc4 = Snumof50sc4 + to_string (Numof50SC4array[i][j][k]) + ','; 
 				Snumof25sc = Snumof25sc + to_string (Numof25SCarray[i][j][k]) + ','; 
 			}
 
@@ -365,8 +411,10 @@ void txtParse::parse (vector<int> &PotentialCore, vector<int> &PotentialLambda, 
 			Savgifpr = Savgifpr + '\n';
 			Savgefpr = Savgefpr + '\n';
 			Savghfpr = Savghfpr + '\n';
-			Snumof100sc = Snumof100sc + '\n';
-			Snumof50sc = Snumof50sc + '\n';
+			Snumof100sc2 = Snumof100sc2 + '\n';
+			Snumof100sc4 = Snumof100sc4 + '\n';
+			Snumof50sc2 = Snumof50sc2 + '\n';
+			Snumof50sc4 = Snumof50sc4 + '\n';
 			Snumof25sc = Snumof25sc + '\n';
 
 			Fbp << Sbp;
@@ -378,8 +426,10 @@ void txtParse::parse (vector<int> &PotentialCore, vector<int> &PotentialLambda, 
 			Favgifpr << Savgifpr;
 			Favgefpr << Savgefpr;
 			Favghfpr << Savghfpr;
-			Fnumof100sc << Snumof100sc;
-			Fnumof50sc << Snumof50sc;
+			Fnumof100sc2 << Snumof100sc2;
+			Fnumof100sc4 << Snumof100sc4;
+			Fnumof50sc2 << Snumof50sc2;
+			Fnumof50sc4 << Snumof50sc4;
 			Fnumof25sc << Snumof25sc;
 
 		}
@@ -394,7 +444,9 @@ void txtParse::parse (vector<int> &PotentialCore, vector<int> &PotentialLambda, 
 	Favgifpr.close ();
 	Favgefpr.close ();
 	Favghfpr.close ();
-	Fnumof100sc.close ();
-	Fnumof50sc.close ();
+	Fnumof100sc2.close ();
+	Fnumof100sc4.close ();
+	Fnumof50sc2.close ();
+	Fnumof50sc4.close ();
 	Fnumof25sc.close ();
 }

@@ -9,8 +9,8 @@
 #include "Event.h"
 
 // #include "ResourceAssignment_FuFBF.h"
-// #include "ResourceAssignment_FuFVF.h"
-#include "ResourceAssignment_FullyFlex.h"
+#include "ResourceAssignment_FuFVF.h"
+// #include "ResourceAssignment_FullyFlex.h"
 // #include "ResourceAssignment_IsolatedCore.h"
 // #include "ResourceAssignment_ICM.h"
 // #include "ResourceAssignment_FixedFlex.h"
@@ -65,8 +65,10 @@ void Network::init () {
 	AvgIntFrag = 0;
 	AvgHybridFrag = 0;
 		
-	Numof100SC = 0;
-	Numof50SC = 0;
+	Numof100SC4 = 0;
+	Numof100SC2 = 0;
+	Numof50SC4 = 0;
+	Numof50SC2 = 0;
 	Numof25SC = 0;
 }
 
@@ -124,11 +126,13 @@ void Network::simulation () {
 	cout << endl << "************************************************************" << endl;
 	#ifdef DEBUG_print_EventID_of_blocked_requests
 	cout << "Start to print EventID of blocked reqeusts" << endl;
+	cout << "BBBBB" << endl;
 	for (int i = 0; i < BlockedRequests.size (); i++) {
 		cout << BlockedRequests[i] << ' ';
 	}
 	cout << endl;
 	#endif
+	cout << "AAAA" << endl;
 	
 	SpectrumUtilization = (double) MaxNumofSS4Data / NUMOFSPECTRALSLOTS;  
 	AvgHoldingTime = TotalHoldingTime / NumofAllocatedRequests;
@@ -141,7 +145,7 @@ void Network::simulation () {
 
 
 	cout << "Spectrum Utilization is: " << SpectrumUtilization << endl;
-	cout << "Utilization of different SCs (100 50 25): " << Numof100SC << ' ' << Numof50SC << ' ' << Numof25SC << endl;
+	cout << "Utilization of different SCs (100: QPSK, 100: 16QAM, 50: QPSK, 50: 16QAM, 25): " << Numof100SC2 << ' ' << Numof100SC4 << ' ' << Numof50SC2 << ' ' << Numof50SC4 << ' ' << Numof25SC << endl;
 	cout << "Max # of Transponders used: " << MaxNumofTransponders << endl;
 	cout << "Max # of Sections used for each request: " << MaxNumofSections << endl;
 	cout << "# of blocked requests is " << NumofFailedRequests << endl;
