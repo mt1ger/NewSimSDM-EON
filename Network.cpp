@@ -60,7 +60,7 @@ void Network::init () {
 	TotalGBUsed = 0;
 	TotalSS4Data= 0;
 	TotalSSOccupied = 0;
-	TotalDataSize = 0;
+	TotalMDataSize = 0;
 	AvgExtFrag = 0;
 	AvgIntFrag = 0;
 	AvgHybridFrag = 0;
@@ -126,22 +126,20 @@ void Network::simulation () {
 	cout << endl << "************************************************************" << endl;
 	#ifdef DEBUG_print_EventID_of_blocked_requests
 	cout << "Start to print EventID of blocked reqeusts" << endl;
-	cout << "BBBBB" << endl;
 	for (int i = 0; i < BlockedRequests.size (); i++) {
 		cout << BlockedRequests[i] << ' ';
 	}
 	cout << endl;
 	#endif
-	cout << "AAAA" << endl;
 	
 	SpectrumUtilization = (double) MaxNumofSS4Data / NUMOFSPECTRALSLOTS;  
 	AvgHoldingTime = TotalHoldingTime / NumofAllocatedRequests;
 	AvgTranspondersUsed = (double) TotalTranspondersUsed / NumofAllocatedRequests;
 	AvgCoresUsed = (double) TotalCoresUsed / NumofAllocatedRequests;
 	AvgGBUsed = (double) TotalGBUsed / NumofAllocatedRequests;
-	AvgIntFrag = (1 - ((double) TotalDataSize / (TotalSS4Data * BW_SPECSLOT)));
+	AvgIntFrag = (1 - ((double) TotalMDataSize / (TotalSS4Data * BW_SPECSLOT)));
 	AvgExtFrag = (1 - (double) TotalSS4Data / TotalSSOccupied);
-	AvgHybridFrag = (1 - (double) TotalDataSize / (TotalSSOccupied * BW_SPECSLOT));
+	AvgHybridFrag = (1 - (double) TotalMDataSize / (TotalSSOccupied * BW_SPECSLOT));
 
 
 	cout << "Spectrum Utilization is: " << SpectrumUtilization << endl;

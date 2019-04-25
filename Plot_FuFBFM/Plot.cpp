@@ -8,9 +8,12 @@
 #include <sys/stat.h>
 #include "txtParse.h"
 
-#define NUMOFSEEDS 30
-#define NUMOFREQUESTS 100000 
-#define LTDOFSEG 4
+// #define NUMOFSEEDS 30
+#define NUMOFSEEDS 3
+// #define NUMOFREQUESTS 100000 
+#define NUMOFREQUESTS 10000 
+// #define LTDOFSEG 4
+#define LTDOFSEG 2
 
 using namespace std;
 mutex mtx;
@@ -23,7 +26,6 @@ void thread_function (string cmd) {
 }
 
 int main () {
-	// For FuFBFMs
 	vector<int> Core, Lambda, Seed;
 	double Number;
 	static unsigned int NumofRequests = NUMOFREQUESTS;
@@ -39,8 +41,8 @@ int main () {
 
 	Core.push_back (1);
 	// Core.push_back (2);
-	// Core.push_back (4);
-	// Core.push_back (7);
+	Core.push_back (4);
+	Core.push_back (7);
 
 	// for (int i = 100; i < 130; i += 10) {
 	for (int i = 10; i < 501; i += 10) {

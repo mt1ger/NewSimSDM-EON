@@ -6,7 +6,7 @@
 // #include "RoutingTable.h"
 #include "EventQueue.h"
 
-#define TESTING
+// #define TESTING
 
 #ifdef TESTING
 // #define DEBUG_print_resource_state_on_the_path
@@ -65,7 +65,7 @@ class Network {
 
 
 		// Metrics to Measure Fregmentation 
-		long long TotalDataSize;
+		double TotalMDataSize; // The total modulated data size.
 		long long TotalSS4Data;
 		long long TotalSSOccupied;
 

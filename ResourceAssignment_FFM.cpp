@@ -166,7 +166,6 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 
 		SortedSections = PotentialSections;
 
-
 	/*** Sort SC Options by their performance form high to low ***/
 	vector<int> SCSSs; // The needed SS for non-modulated Super Channel options
 	vector<int> SCSizes; // The bit rate for each super channel
@@ -174,6 +173,7 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 
 	map<int, int> RMSSs; // The needed SS for modulated request 
 	vector<string> MFormat; // The allowed modulation format for each super channel 
+	vector<int> mfTimesArray;
 	vector<int> SortedSCSizes; // Sorted index of performance of super channel options
 	list<int> TempRMSSs;
 
@@ -191,6 +191,7 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 		unsigned int TempSCSS = SCSSs.at (i);
 		unsigned int TempSCSize = SCSizes.at (i);
 		modulationFormats.mf_chosen (CircuitRoute, &TempSCSS, &TempSCSize, &MF, &mfTimes);
+		mfTimesArray.push_back (mfTimes);
 		SCMSSs.push_back (TempSCSS);
 		MFormat.push_back (MF);
 		int temp = (TempSCSS + 1) * ceil ((double)circuitRequest->DataSize / SCSizes[i]);
@@ -276,6 +277,7 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 	/*** Pre-Allocation ***/
 	int MainLoopIndex; // The index of the SC that has the highest performance
 	list< vector<int> >::iterator Index;
+
 	/** Normal Mode **/
 	for (int i = 0; i < SCSizes.size (); i++)
 	{
@@ -401,8 +403,6 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 	/** Segment Limitation Mode **/
 	if (AssignedSpectralSection.size () > network->SectionNumLimitation)
 	{
-		cout << "Seg # exceeds limitation" << endl;
-
 		AssignedSpectralSection.clear ();
 		BitRate = circuitRequest->DataSize;
 		SortedSections1 = PotentialSections;
@@ -536,6 +536,7 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 		circuitRelease = new CircuitRelease (circuitRequest->EventID, CircuitRoute, AssignedSpectralSection, circuitRequest->StartTime + circuitRequest->Duration, NumofGB);
 		eventQueue->queue_insert (circuitRelease);
 
+		int TempData = circuitRequest->DataSize;
 		for (int i = 0; i < AssignedSpectralSection.size (); i++) {
 			if (SCSizes.at (AssignedSpectralSection[i][3]) == 25)
 				network->Numof25SC++;
@@ -549,10 +550,23 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 			else if (SCSizes.at (AssignedSpectralSection[i][3]) == 100)
 			{
 				if (MFormat.at (AssignedSpectralSection[i][3]) == "QPSK")
+				{
 					network->Numof100SC2++;
+				}
 				else if (MFormat.at (AssignedSpectralSection[i][3]) == "16QAM")
 					network->Numof100SC4++;
 			}
+
+			if (i != AssignedSpectralSection.size () - 1)
+			{
+				network->TotalMDataSize += (AssignedSpectralSection[i][2] - AssignedSpectralSection[i][1]) * BW_SPECSLOT;
+				TempData -= SCSizes.at (AssignedSpectralSection[i][3]);
+			}
+			else
+			{
+				network->TotalMDataSize += (double) TempData / mfTimesArray.at (AssignedSpectralSection[i][3]); 
+			}
+				
 			network->NumofSS4Data += AssignedSpectralSection[i][2] - AssignedSpectralSection[i][1];
 			network->TotalSS4Data += AssignedSpectralSection[i][2] - AssignedSpectralSection[i][1];
 			network->TotalSSOccupied += AssignedSpectralSection[i][2] - AssignedSpectralSection[i][1] + 1;
@@ -565,7 +579,6 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 		network->TotalTranspondersUsed += NumofGB;
 		network->TotalCoresUsed += CoreCnter;
 		network->TotalGBUsed += NumofGB;
-		network->TotalDataSize += circuitRequest->DataSize;
 	}
 
 	#ifdef DEBUG_print_resource_state_on_the_path

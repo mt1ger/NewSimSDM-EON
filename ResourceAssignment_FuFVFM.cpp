@@ -281,6 +281,7 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 
 	map<int, int> RMSSs; // The needed SS for modulated request 
 	vector<string> MFormat; // The allowed modulation format for each super channel 
+	vector<int> mfTimesArray;
 	vector<int> SortedSCSizes; // Sorted index of performance of super channel options
 	list<int> TempRMSSs;
 
@@ -299,6 +300,7 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 		unsigned int TempSCSize = SCSizes.at (i);
 		modulationFormats.mf_chosen (CircuitRoute, &TempSCSS, &TempSCSize, &MF, &mfTimes);
 		SCMSSs.push_back (TempSCSS);
+		mfTimesArray.push_back (mfTimes);
 		MFormat.push_back (MF);
 		int temp = (TempSCSS + 1) * ceil (((double)circuitRequest->DataSize / SCSizes[i]));
 		RMSSs[SCSizes.at (i)] = temp;
@@ -647,6 +649,7 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 		circuitRelease = new CircuitRelease (circuitRequest->EventID, CircuitRoute, AssignedSpectralSection, circuitRequest->StartTime + circuitRequest->Duration, NumofGB);
 		eventQueue->queue_insert (circuitRelease);
 
+		int TempData = circuitRequest->DataSize;
 		for (int i = 0; i < AssignedSpectralSection.size (); i++) {
 			if (SCSizes.at (AssignedSpectralSection[i][3]) == 25)
 				network->Numof25SC++;
@@ -664,6 +667,17 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 				else if (MFormat.at (AssignedSpectralSection[i][3]) == "16QAM")
 					network->Numof100SC4++;
 			}
+
+			if (i != AssignedSpectralSection.size () - 1)
+			{
+				network->TotalMDataSize += (AssignedSpectralSection[i][2] - AssignedSpectralSection[i][1]) * BW_SPECSLOT;
+				TempData -= SCSizes.at (AssignedSpectralSection[i][3]);
+			}
+			else
+			{
+				network->TotalMDataSize += (double) TempData / mfTimesArray.at (AssignedSpectralSection[i][3]); 
+			}
+
 			network->NumofSS4Data += AssignedSpectralSection[i][2] - AssignedSpectralSection[i][1];
 			network->TotalSS4Data += AssignedSpectralSection[i][2] - AssignedSpectralSection[i][1];
 			network->TotalSSOccupied += AssignedSpectralSection[i][2] - AssignedSpectralSection[i][1] + 1;
@@ -675,7 +689,6 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 		network->TotalTranspondersUsed += NumofGB;
 		network->TotalCoresUsed += CoreCnter;
 		network->TotalGBUsed += NumofGB;
-		network->TotalDataSize += circuitRequest->DataSize;
 	}
 
 	#ifdef DEBUG_print_resource_state_on_the_path
