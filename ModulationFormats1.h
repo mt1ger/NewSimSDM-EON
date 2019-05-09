@@ -4,7 +4,7 @@
 #include "Event.h"
 #include "Network.h"
 
-enum MF_t {QPSK, QAM16, QAM64};
+enum MF_t {QPSK, QAM16, QAM64, Failure};
 
 class ModulationFormats {
 	public:

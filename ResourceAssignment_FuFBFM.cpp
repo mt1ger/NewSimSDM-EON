@@ -173,9 +173,6 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 	int TempSpecSlot = -1;
 	unsigned int core;
 
-
-
-
 	CircuitRoute = routingTable.get_shortest_path (circuitRequest->Src, circuitRequest->Dest);
 
 	#ifdef DEBUG_print_resource_state_on_the_path
@@ -299,9 +296,8 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 	cout << endl;
 	#endif 
 
-
 	/*** Sort SC Options by their performance form high to low ***/
-	vector<int> SCSSs; // The needed SS for non-modulated Super Channel options
+	vector<int> CandidateSCs; // The needed SS for non-modulated Super Channel options
 	vector<int> SCSizes; // The bit rate for each super channel
 	vector<int> SCMSSs; // The needed SS for each modulated super channel
 
@@ -311,25 +307,25 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 	vector<int> SortedSCSizes; // Sorted index of performance of super channel options
 	list<int> TempRMSSs;
 
-	SCSSs.push_back (2);
-	SCSSs.push_back (4);
-	// SCSSs.push_back (6);
-	SCSSs.push_back (8);
-	SCSizes.push_back (25);
-	SCSizes.push_back (50);
-	// SCSizes.push_back (75);
-	SCSizes.push_back (100);
+	CandidateSCs.push_back (25);
+	CandidateSCs.push_back (50);
+	// CandidateSCs.push_back (75);
+	CandidateSCs.push_back (100);
 
-	for (int i = 0; i < SCSSs.size (); i++)
+	for (int i = 0; i < CandidateSCs.size (); i++)
 	{
-		unsigned int TempSCSS = SCSSs.at (i);
-		unsigned int TempSCSize = SCSizes.at (i);
+		unsigned int TempSCSS;
+		unsigned int TempSCSize = CandidateSCs.at (i);
 		modulationFormats.mf_chosen (CircuitRoute, &TempSCSS, &TempSCSize, &MF, &mfTimes);
-		SCMSSs.push_back (TempSCSS);
-		MFormat.push_back (MF);
-		mfTimesArray.push_back (mfTimes);
-		int temp = (TempSCSS + 1) * ceil ((double)circuitRequest->DataSize / SCSizes[i]);
-		RMSSs[SCSizes.at (i)] = temp;
+		if (TempSCSS != -1)
+		{
+			SCMSSs.push_back (TempSCSS);
+			MFormat.push_back (MF);
+			mfTimesArray.push_back (mfTimes);
+			int temp = (TempSCSS + 1) * ceil ((double)circuitRequest->DataSize / CandidateSCs[i]);
+			RMSSs[CandidateSCs.at (i)] = temp;
+			SCSizes.push_back (CandidateSCs[i]);
+		}
 	}
 
 	#ifdef DEBUG_print_SCinfo
@@ -408,6 +404,7 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 	#endif 
 
 	/*** Pre-Allocation ***/
+
 	/** Normal Mode **/
 	int MainLoopIndex; // The index of the SC that has the highest performance
 	vector<int> AllocatedIndex;
@@ -495,8 +492,6 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 				{
 					i++;
 				}
-				else if (BitRate <= 25)
-					i = 1;
 			}
 		}
 	}
@@ -511,50 +506,48 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 		NumofGB = 0;
 		bool BiggerFlag = false;
 		bool SmallerFlag = false;
-		int i; // Index of SCMSSs and SCSizes
+		int i = -1; // Index of SCMSSs and SCSizes
 
-		if (circuitRequest->DataSize > 50 && circuitRequest->DataSize <= 100)
-			i = SCSizes.size () - 1;
-		else if (circuitRequest->DataSize > 25 && circuitRequest->DataSize <= 50)
-			i = 1;
-		if (circuitRequest->DataSize <= 25)
-			i = 0;
-
-		unsigned int TempSCSS = SCMSSs.at (i);
-		unsigned int TempSCSize = SCSizes.at (i);
-
-		if (SortedSections1.empty ()) {
-			AvailableFlag = false;
-		}
-		while (BitRate > 0) {
-			if (Index == SortedSections1.end ()) {
-				if (BiggerFlag == true) {
-					Index--;
-					SmallerFlag = true;
-					continue;
-				}
-			}
-			else if (Index->at (2) - Index->at (1) + 1 == TempSCSS + GB) {
-				HAssignedSpectralSection.push_back (Index->at (0));
-				HAssignedSpectralSection.push_back (Index->at (1));
-				HAssignedSpectralSection.push_back (Index->at (2));
-				HAssignedSpectralSection.push_back (i);
-				AssignedSpectralSection.push_back (HAssignedSpectralSection);
-				HAssignedSpectralSection.clear ();
-				if (BitRate >= SCSizes.at (i))
-					BitRate -= SCSizes.at (i);
-				else
-					BitRate = 0;
-				Index = SortedSections1.erase (Index);
-				NumofGB++;
+		for (int j = SCSizes.size () - 1; j >= 0; j--)
+		{
+			if (SCSizes[SCSizes.size () - 1] < BitRate)
+			{
+				AvailableFlag = false;
 				break;
 			}
-			else if (Index->at (2) - Index->at (1) + 1 > TempSCSS + GB) {
-				BiggerFlag = true;
-				if (SmallerFlag == true) {
+			else if (BitRate < SCSizes[j])
+				continue;
+			else if (BitRate > SCSizes[j])
+			{
+				i = j + 1;
+				break;
+			}
+			else if (BitRate == SCSizes[j])
+			{
+				i = j;
+				break;
+			}
+		}
+
+		if (AvailableFlag != false) 
+		{
+			unsigned int TempSCSS = SCMSSs.at (i);
+			unsigned int TempSCSize = SCSizes.at (i);
+			if (SortedSections1.empty ()) {
+				AvailableFlag = false;
+			}
+			while (BitRate > 0) {
+				if (Index == SortedSections1.end ()) {
+					if (BiggerFlag == true) {
+						Index--;
+						SmallerFlag = true;
+						continue;
+					}
+				}
+				else if (Index->at (2) - Index->at (1) + 1 == TempSCSS + GB) {
 					HAssignedSpectralSection.push_back (Index->at (0));
 					HAssignedSpectralSection.push_back (Index->at (1));
-					HAssignedSpectralSection.push_back (Index->at (1) + TempSCSS + GB - 1); 
+					HAssignedSpectralSection.push_back (Index->at (2));
 					HAssignedSpectralSection.push_back (i);
 					AssignedSpectralSection.push_back (HAssignedSpectralSection);
 					HAssignedSpectralSection.clear ();
@@ -562,33 +555,51 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 						BitRate -= SCSizes.at (i);
 					else
 						BitRate = 0;
-					if (Index->at (2) - (Index->at (1) + TempSCSS + GB) + 1 >= 2)
-					{
-						HAssignedSpectralSection.push_back (Index->at (0));
-						HAssignedSpectralSection.push_back (Index->at (1) + TempSCSS + GB);
-						HAssignedSpectralSection.push_back (Index->at (2)); 
-						SortedSections1.push_back (HAssignedSpectralSection);
-						Index = SortedSections1.erase (Index);
-						sort_sections (SortedSections1);
-						HAssignedSpectralSection.clear ();
-					}
-					else
-						Index = SortedSections1.erase (Index);
+					Index = SortedSections1.erase (Index);
 					NumofGB++;
 					break;
 				}
-				Index++;
-			}
-			else if (Index->at (2) - Index->at (1) + 1 < TempSCSS + GB) {
-				if (BiggerFlag == true) {
-					Index--;
-					SmallerFlag = true;
-					continue;
+				else if (Index->at (2) - Index->at (1) + 1 > TempSCSS + GB) {
+					BiggerFlag = true;
+					if (SmallerFlag == true) {
+						HAssignedSpectralSection.push_back (Index->at (0));
+						HAssignedSpectralSection.push_back (Index->at (1));
+						HAssignedSpectralSection.push_back (Index->at (1) + TempSCSS + GB - 1); 
+						HAssignedSpectralSection.push_back (i);
+						AssignedSpectralSection.push_back (HAssignedSpectralSection);
+						HAssignedSpectralSection.clear ();
+						if (BitRate >= SCSizes.at (i))
+							BitRate -= SCSizes.at (i);
+						else
+							BitRate = 0;
+						if (Index->at (2) - (Index->at (1) + TempSCSS + GB) + 1 >= 2)
+						{
+							HAssignedSpectralSection.push_back (Index->at (0));
+							HAssignedSpectralSection.push_back (Index->at (1) + TempSCSS + GB);
+							HAssignedSpectralSection.push_back (Index->at (2)); 
+							SortedSections1.push_back (HAssignedSpectralSection);
+							Index = SortedSections1.erase (Index);
+							sort_sections (SortedSections1);
+							HAssignedSpectralSection.clear ();
+						}
+						else
+							Index = SortedSections1.erase (Index);
+						NumofGB++;
+						break;
+					}
+					Index++;
 				}
-				else
-				{
-					AvailableFlag = false;
-					break;
+				else if (Index->at (2) - Index->at (1) + 1 < TempSCSS + GB) {
+					if (BiggerFlag == true) {
+						Index--;
+						SmallerFlag = true;
+						continue;
+					}
+					else
+					{
+						AvailableFlag = false;
+						break;
+					}
 				}
 			}
 		}
@@ -606,7 +617,6 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 		#ifdef PRINT_allocation_block_release
 		cout << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << endl;
 		cout << "Request " << circuitRequest->EventID << " is blocked" << endl;
-		cout << "Modulation Format: " << MF << endl;
 		cout << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << endl;
 		#endif
 
@@ -629,7 +639,7 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 		#ifdef PRINT_allocation_block_release
 		cout << "------------------------------------------------------------" << endl;
 		cout << "Request ID: " << circuitRequest->EventID << "\tStart: " << circuitRequest->EventTime << "\tEnd: " << circuitRequest->StartTime + circuitRequest->Duration << endl;
-		cout << "Source: " << circuitRequest->Src << "  Destination: " << circuitRequest->Dest << "  ModulationFormats: " << MF << endl;
+		cout << "Source: " << circuitRequest->Src << "  Destination: " << circuitRequest->Dest << endl;
 		cout << "Path: ";
 		for(unsigned int t = 0; t < CircuitRoute.size() - 1; t++)
 			cout << CircuitRoute.at(t) << " --> ";

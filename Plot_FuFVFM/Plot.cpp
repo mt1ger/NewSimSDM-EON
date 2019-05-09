@@ -9,11 +9,11 @@
 #include "txtParse.h"
 
 // #define NUMOFSEEDS 30
-#define NUMOFSEEDS 30
+#define NUMOFSEEDS 3
 // #define NUMOFREQUESTS 100000 
-#define NUMOFREQUESTS 100000 
+#define NUMOFREQUESTS 10000 
 // #define LTDOFSEG 4
-#define LTDOFSEG 4
+#define LTDOFSEG 2
 
 using namespace std;
 mutex mtx;

@@ -167,7 +167,7 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 		SortedSections = PotentialSections;
 
 	/*** Sort SC Options by their performance form high to low ***/
-	vector<int> SCSSs; // The needed SS for non-modulated Super Channel options
+	vector<int> CandidateSCs; // The needed SS for non-modulated Super Channel options
 	vector<int> SCSizes; // The bit rate for each super channel
 	vector<int> SCMSSs; // The needed SS for each modulated super channel
 
@@ -177,25 +177,25 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 	vector<int> SortedSCSizes; // Sorted index of performance of super channel options
 	list<int> TempRMSSs;
 
-	SCSSs.push_back (2);
-	SCSSs.push_back (4);
-	// SCSSs.push_back (6);
-	SCSSs.push_back (8);
-	SCSizes.push_back (25);
-	SCSizes.push_back (50);
-	// SCSizes.push_back (75);
-	SCSizes.push_back (100);
+	CandidateSCs.push_back (25);
+	CandidateSCs.push_back (50);
+	// CandidateSCs.push_back (75);
+	CandidateSCs.push_back (100);
 
-	for (int i = 0; i < SCSSs.size (); i++)
+	for (int i = 0; i < CandidateSCs.size (); i++)
 	{
-		unsigned int TempSCSS = SCSSs.at (i);
-		unsigned int TempSCSize = SCSizes.at (i);
+		unsigned int TempSCSS;
+		unsigned int TempSCSize = CandidateSCs.at (i);
 		modulationFormats.mf_chosen (CircuitRoute, &TempSCSS, &TempSCSize, &MF, &mfTimes);
-		mfTimesArray.push_back (mfTimes);
-		SCMSSs.push_back (TempSCSS);
-		MFormat.push_back (MF);
-		int temp = (TempSCSS + 1) * ceil ((double)circuitRequest->DataSize / SCSizes[i]);
-		RMSSs[SCSizes.at (i)] = temp;
+		if (TempSCSS != -1)
+		{
+			SCMSSs.push_back (TempSCSS);
+			MFormat.push_back (MF);
+			mfTimesArray.push_back (mfTimes);
+			int temp = (TempSCSS + 1) * ceil ((double)circuitRequest->DataSize / CandidateSCs[i]);
+			RMSSs[CandidateSCs.at (i)] = temp;
+			SCSizes.push_back (CandidateSCs[i]);
+		}
 	}
 
 	#ifdef DEBUG_print_SCinfo
@@ -289,10 +289,11 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 	}
 
 	BitRate = circuitRequest->DataSize;
-	bool NextSC = false;
 	
 	for (int i = MainLoopIndex; i >= 0; i--)
 	{
+	bool NextSC = false; // True if there is another downgraded SC available. False if there is not 
+		cout << "BEGINNING BitRate and SC is " << BitRate << ' ' << SCSizes[i] << endl; 
 		// AssignedSpectralSection.clear ();
 		// BitRate = circuitRequest->DataSize;
 		// SortedSections = PotentialSections;
@@ -305,13 +306,18 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 		}
 		while (BitRate > 0)
 		{
-			// for (Index = SortedSections.begin (); Index != SortedSections.end (); Index++) {
+			// for (Index = SortedSections.begin (); Index != SortedSections.end (); Index++) 
 				if (Index == SortedSections.end ())
 				{
-					NextSC = true;
+					if (i != 0)
+						NextSC = true;
+					else 
+						NextSC = false;
+					cout << "i and NextSC " << i << ' ' << NextSC << endl;
 					break;
 				}
 				else if (Index->at (2) - Index->at (1) == SCMSSs.at (i)) {
+					cout << "Equal" << endl;
 					HAssignedSpectralSection.push_back (Index->at (0));
 					HAssignedSpectralSection.push_back (Index->at (1));
 					HAssignedSpectralSection.push_back (Index->at (2));
@@ -339,6 +345,7 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 					break;
 				}
 				else if (Index->at (2) - Index->at (1) > SCMSSs.at (i)) {
+					cout << "Greater" << endl;
 					HAssignedSpectralSection.push_back (Index->at (0));
 					HAssignedSpectralSection.push_back (Index->at (1));
 					HAssignedSpectralSection.push_back (Index->at (1) + SCMSSs.at (i) + GB - 1);
@@ -376,12 +383,16 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 				else if (Index->at (2) - Index->at (1) < SCMSSs.at (i))
 					Index++;
 		}
+
+cout << "AvailableFlag and BitRate " << AvailableFlag << ' ' << BitRate << endl;
+
 		if (BitRate == 0)
 			break;
-		if (AvailableFlag == false)
-			break;
-		else if (NextSC == true)
+		if (NextSC == true)
+		{
+			cout <<" ????????" << endl;
 			continue;
+		}
 		else 
 		{
 			if (BitRate > 0)
@@ -398,6 +409,7 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 					i = 1;
 			}
 		}
+		cout << "END BitRate and SC is " << BitRate << ' ' << SCSizes[i] << endl; 
 	}
 
 	/** Segment Limitation Mode **/
@@ -408,7 +420,7 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 		SortedSections1 = PotentialSections;
 		NumofGB = 0;
 		Index = SortedSections1.begin ();
-		int i;
+		int i = -1;
 
 		#ifdef DEBUG_print_PotentialSections
 		list< vector<int> >::iterator ProbeIndex;
@@ -422,59 +434,77 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 		cout << endl;
 		#endif
 
-		if (circuitRequest->DataSize > 50 && circuitRequest->DataSize <= 100)
-			i = SCSizes.size () - 1;
-		else if (circuitRequest->DataSize > 25 && circuitRequest->DataSize <= 50)
-			i = 1;
-		else if (circuitRequest->DataSize <= 25)
-			i = 0;
-
-		while (BitRate > 0)
+		for (int j = SCSizes.size () - 1; j >= 0; j--)
 		{
-			// for (Index = SortedSections.begin (); Index != SortedSections.end (); Index++) {
-			if (Index == SortedSections1.end ())
+			if (SCSizes[SCSizes.size () - 1] < BitRate)
 			{
 				AvailableFlag = false;
 				break;
 			}
-			else if (Index->at (2) - Index->at (1) == SCMSSs.at (i)) {
-				HAssignedSpectralSection.push_back (Index->at (0));
-				HAssignedSpectralSection.push_back (Index->at (1));
-				HAssignedSpectralSection.push_back (Index->at (2));
-				HAssignedSpectralSection.push_back (i);
-				AssignedSpectralSection.push_back (HAssignedSpectralSection);
-				HAssignedSpectralSection.clear ();
-				if (BitRate >= SCSizes.at (i))
-					BitRate -= SCSizes.at (i);
-				else
-					BitRate = 0;
-				NumofGB++;
+			else if (BitRate < SCSizes[j])
+				continue;
+			else if (BitRate > SCSizes[j])
+			{
+				i = j + 1;
+				break;
 			}
-			else if (Index->at (2) - Index->at (1) > SCMSSs.at (i)) {
-				HAssignedSpectralSection.push_back (Index->at (0));
-				HAssignedSpectralSection.push_back (Index->at (1));
-				HAssignedSpectralSection.push_back (Index->at (1) + SCMSSs.at (i) + GB - 1);
-				HAssignedSpectralSection.push_back (i);
-				AssignedSpectralSection.push_back (HAssignedSpectralSection);
-				HAssignedSpectralSection.clear ();
-				if (BitRate >= SCSizes.at (i))
-					BitRate -= SCSizes.at (i);
-				else
-					BitRate = 0;
-				if (Index->at (2) - (Index->at (1) + SCMSSs.at (i) + GB) + 1 >= 2)
+			else if (BitRate == SCSizes[j])
+			{
+				i = j;
+				break;
+			}
+		}
+
+
+		if (AvailableFlag != false)
+		{
+			while (BitRate > 0)
+			{
+				// for (Index = SortedSections.begin (); Index != SortedSections.end (); Index++) {
+				if (Index == SortedSections1.end ())
 				{
-					HAssignedSpectralSection.push_back (Index->at (0));
-					HAssignedSpectralSection.push_back (Index->at (1) + SCMSSs.at (i) + GB);
-					HAssignedSpectralSection.push_back (Index->at (2)); 
-					*Index = HAssignedSpectralSection;
-					HAssignedSpectralSection.clear ();
+					AvailableFlag = false;
+					break;
 				}
-				else
-					Index = SortedSections1.erase (Index);
-				NumofGB++;
+				else if (Index->at (2) - Index->at (1) == SCMSSs.at (i)) {
+					HAssignedSpectralSection.push_back (Index->at (0));
+					HAssignedSpectralSection.push_back (Index->at (1));
+					HAssignedSpectralSection.push_back (Index->at (2));
+					HAssignedSpectralSection.push_back (i);
+					AssignedSpectralSection.push_back (HAssignedSpectralSection);
+					HAssignedSpectralSection.clear ();
+					if (BitRate >= SCSizes.at (i))
+						BitRate -= SCSizes.at (i);
+					else
+						BitRate = 0;
+					NumofGB++;
+				}
+				else if (Index->at (2) - Index->at (1) > SCMSSs.at (i)) {
+					HAssignedSpectralSection.push_back (Index->at (0));
+					HAssignedSpectralSection.push_back (Index->at (1));
+					HAssignedSpectralSection.push_back (Index->at (1) + SCMSSs.at (i) + GB - 1);
+					HAssignedSpectralSection.push_back (i);
+					AssignedSpectralSection.push_back (HAssignedSpectralSection);
+					HAssignedSpectralSection.clear ();
+					if (BitRate >= SCSizes.at (i))
+						BitRate -= SCSizes.at (i);
+					else
+						BitRate = 0;
+					if (Index->at (2) - (Index->at (1) + SCMSSs.at (i) + GB) + 1 >= 2)
+					{
+						HAssignedSpectralSection.push_back (Index->at (0));
+						HAssignedSpectralSection.push_back (Index->at (1) + SCMSSs.at (i) + GB);
+						HAssignedSpectralSection.push_back (Index->at (2)); 
+						*Index = HAssignedSpectralSection;
+						HAssignedSpectralSection.clear ();
+					}
+					else
+						Index = SortedSections1.erase (Index);
+					NumofGB++;
+				}
+				else if (Index->at (2) - Index->at (1) < SCMSSs.at (i))
+					Index++;
 			}
-			else if (Index->at (2) - Index->at (1) < SCMSSs.at (i))
-				Index++;
 		}
 	}
 

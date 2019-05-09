@@ -40,10 +40,20 @@ void ModulationFormats::mf_chosen (vector<int> & shortestPath, unsigned int * oc
 	switch (SC) 
 	{
 		case 25:		
-			m_Format = QPSK;
-			*mfTimes = 2;
-			am_SpectralSlots = spectralslots_computation (*mfTimes, 25);
-			*MF = "QPSK";
+			if (TotalDist <= 22160)
+			{
+				m_Format = QPSK;
+				*mfTimes = 2;
+				am_SpectralSlots = spectralslots_computation (*mfTimes, 25);
+				*MF = "QPSK";
+			}
+			else
+			{
+				m_Format = Failure;
+				*mfTimes = -1;
+				*MF = "Fail";
+				am_SpectralSlots = -1; 
+			}
 		break;
 		case 50:
 			if (TotalDist > 4750 && TotalDist <= 11080) {
@@ -58,6 +68,13 @@ void ModulationFormats::mf_chosen (vector<int> & shortestPath, unsigned int * oc
 				*MF = "16QAM";
 				am_SpectralSlots = spectralslots_computation (*mfTimes, 50);
 			}
+			else
+			{
+				m_Format = Failure;
+				*mfTimes = -1;
+				*MF = "Fail";
+				am_SpectralSlots = -1; 
+			}
 		break;
 		// case 75:
 		// 	if (TotalDist > 3166 && TotalDist <= 7387) {
@@ -68,7 +85,7 @@ void ModulationFormats::mf_chosen (vector<int> & shortestPath, unsigned int * oc
 		// 	}
 		// 	else if (TotalDist > 1221 && TotalDist <= 3166) {
 		// 		m_Format = QAM16;
-		// 		*mfTimes = 4;
+		// 		*mfTimes = 4a
 		// 		*MF = "16QAM";
 		// 		am_SpectralSlots = spectralslots_computation (*mfTimes, 75);
 		// 	}
@@ -91,6 +108,13 @@ void ModulationFormats::mf_chosen (vector<int> & shortestPath, unsigned int * oc
 				*mfTimes = 4;
 				*MF = "16QAM";
 				am_SpectralSlots = spectralslots_computation (*mfTimes, 100);
+			}
+			else
+			{
+				m_Format = Failure;
+				*mfTimes = -1;
+				*MF = "Fail";
+				am_SpectralSlots = -1; 
 			}
 		break;
 	}

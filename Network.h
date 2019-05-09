@@ -6,7 +6,7 @@
 // #include "RoutingTable.h"
 #include "EventQueue.h"
 
-// #define TESTING
+#define TESTING
 
 #ifdef TESTING
 // #define DEBUG_print_resource_state_on_the_path
