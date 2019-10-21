@@ -158,6 +158,19 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 	RoutingTable routingTable (network);	
 	ModulationFormats modulationFormats (circuitRequest, network);
 
+	switch (circuitRequest->DataSize)
+	{
+		case 40:
+			network->probe_40++;
+			break;
+		case 100:
+			network->probe_100++;
+			break;
+		case 400:
+			network->probe_400++;
+			break;
+	}
+
 	/*** VARIABLE DECLARATION ***/
 	vector<int> CircuitRoute;
 	bool AvailableFlag = true;
@@ -311,6 +324,7 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 	CandidateSCs.push_back (50);
 	// CandidateSCs.push_back (75);
 	CandidateSCs.push_back (100);
+	CandidateSCs.push_back (200);
 
 	for (int i = 0; i < CandidateSCs.size (); i++)
 	{
@@ -620,7 +634,20 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 		cout << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << endl;
 		#endif
 
-			network->NumofFailedRequests++;
+		network->NumofFailedRequests++;
+		switch (circuitRequest->DataSize)
+		{
+			case 40:	
+				network->block_40++;
+				break;
+			case 100:	
+				network->block_100++;
+				break;
+			case 400:	
+				network->block_400++;
+				break;
+		}
+
 	}
 	else if (AvailableFlag == true) {
 		int temp = AssignedSpectralSection[0][0];
@@ -677,7 +704,36 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 					network->Numof100SC2++;
 				else if (MFormat.at (AssignedSpectralSection[i][3]) == "16QAM")
 					network->Numof100SC4++;
+			}			if (SCSizes.at (AssignedSpectralSection[i][3]) == 25)
+				network->Numof25SC++;
+			else if (SCSizes.at (AssignedSpectralSection[i][3]) == 50)
+			{
+				if (MFormat.at (AssignedSpectralSection[i][3]) == "QPSK")
+					network->Numof50SC2++;
+				else if (MFormat.at (AssignedSpectralSection[i][3]) == "16QAM")
+					network->Numof50SC4++;
+				else if (MFormat.at (AssignedSpectralSection[i][3]) == "64QAM")
+					network->Numof50SC6++;
 			}
+			else if (SCSizes.at (AssignedSpectralSection[i][3]) == 100)
+			{
+				if (MFormat.at (AssignedSpectralSection[i][3]) == "QPSK")
+					network->Numof100SC2++;
+				else if (MFormat.at (AssignedSpectralSection[i][3]) == "16QAM")
+					network->Numof100SC4++;
+				else if (MFormat.at (AssignedSpectralSection[i][3]) == "64QAM")
+				network->Numof100SC6++;
+			}
+			else if (SCSizes.at (AssignedSpectralSection[i][3]) == 200)
+			{
+				if (MFormat.at (AssignedSpectralSection[i][3]) == "QPSK")
+					network->Numof200SC2++;
+				else if (MFormat.at (AssignedSpectralSection[i][3]) == "16QAM")
+					network->Numof200SC4++;
+				else if (MFormat.at (AssignedSpectralSection[i][3]) == "64QAM")
+					network->Numof200SC6++;
+			}
+	
 			if (i != AssignedSpectralSection.size () - 1)
 			{
 				network->TotalMDataSize += (AssignedSpectralSection[i][2] - AssignedSpectralSection[i][1]) * BW_SPECSLOT;

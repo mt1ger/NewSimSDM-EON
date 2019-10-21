@@ -77,12 +77,18 @@ int main (int argc, char *argv[]) {
 	string ResultFile;
 	ResultFile = Path + "Plot.txt";
 	fp.open (ResultFile, fstream::app);
-	string plot = to_string (network->NumofCores) + ' ' + to_string (Erlang) + ' ' + argv[7] + ' ' + to_string (BlockingProbability) + ' ' + to_string (network->MaxNumofTransponders) + ' ' + to_string (network->AvgCoresUsed) + ' ' + to_string (network->AvgHoldingTime) + ' ' + to_string (network->AvgTranspondersUsed)+ ' ' + to_string (network->AvgGBUsed) + ' ' + to_string (network->AvgIntFrag) + ' ' + to_string (network->AvgExtFrag) + ' ' + to_string (network->AvgHybridFrag) + ' ' + to_string (network->Numof100SC2) + ' ' + to_string (network->Numof100SC4) + ' ' + to_string (network->Numof50SC2) + ' ' +  to_string (network->Numof50SC4) + ' ' + to_string (network->Numof25SC) + '\n'; 
+	string plot = to_string (network->NumofCores) + ' ' + to_string (Erlang) + ' ' + argv[7] + ' ' + to_string (BlockingProbability) + ' ' + to_string (network->MaxNumofTransponders) + ' ' + to_string (network->AvgCoresUsed) + ' ' + to_string (network->AvgHoldingTime) + ' ' + to_string (network->AvgTranspondersUsed)+ ' ' + to_string (network->AvgGBUsed) + ' ' + to_string (network->AvgIntFrag) + ' ' + to_string (network->AvgExtFrag) + ' ' + to_string (network->AvgHybridFrag) + ' ' + to_string (network->Numof200SC6) + ' ' + to_string (network->Numof200SC4) + ' ' + to_string (network->Numof200SC2) + ' ' + to_string (network->Numof100SC6) + ' ' + to_string (network->Numof100SC4) + ' ' + to_string (network->Numof100SC2) + ' ' + to_string (network->Numof50SC6) + ' ' + to_string (network->Numof50SC4) + ' ' +  to_string (network->Numof50SC2) + ' ' + to_string (network->Numof25SC) + ' ' + to_string (network->block_400) + ' ' + to_string (network->block_100) + ' ' + to_string (network->block_40) + '\n'; 
 	fp << plot;
 	fp.close ();
 
 	EndFlag = 1;
 	pthread_join (timer, NULL);
+
+	cout << "The incoming requests distribution: " << endl;
+	cout << network->probe_40 << ' ' << network->probe_100 << ' ' << network->probe_400 << endl;
+	cout << "The blocked request distribution: " << endl;
+	cout << network->block_40 << ' ' << network->block_100 << ' ' << network->block_400 << endl;
+
 	double TimeSpent = (((double)(EndPoint - StartPoint))/ CLOCKS_PER_SEC);
 	cout << "Time spent in \"s\" is " << TimeSpent << endl;
 	cout << "************************************************************" << endl;

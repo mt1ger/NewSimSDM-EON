@@ -6,7 +6,7 @@
 
 
 **************************************************
-Global instruction:
+#Global instruction:
 1. When compile:
 	a. Make sure in Network.cpp, choosing right header of ResourceAssignment
 	b. Make sure using right makefile
@@ -15,7 +15,8 @@ Global instruction:
 
 
 **************************************************
-Version 1.0:
+# Version Information
+## Version 1.0:
 1. Time slot did not considered.
 2. First-fit applied.
 3. Core continuity constraint applied.
@@ -25,13 +26,13 @@ Version 1.0:
 
 
 
-Version 1.1:
+## Version 1.1:
 1. Time slot did not considered.
 2. First-fit applied.
 3. Core continuity constraint applied.
 4. Spectral Slot continuity constraint applied.
 
-5. /* Modified from Version 1.0 */
+5. Modified from Version 1.0
 	a. Flex-grid SDM allocation scheme applied
 	b. Fully flexible allocation scheme applied
 	c. Isolated Core SDM allocation scheme applied 
@@ -40,7 +41,7 @@ Version 1.1:
 
 
 
-Version 1.2:
+## Version 1.2:
 1. Time slot did not considered.
 2. First-fit applied.
 3. Core continuity constraint applied.
@@ -63,7 +64,7 @@ Version 1.2:
 
 
 
-Version 1.2.5:
+## Version 1.2.5:
 1. Time slot did not considered.
 2. First-fit applied.
 3. Core continuity constraint applied.
@@ -90,7 +91,7 @@ Make Plot scripts more advanced.
 
 
 
-Version 1.3:
+## Version 1.3:
 1. Time Slot did not considered.
 2. We have:
 	a. First-Fit
@@ -116,16 +117,20 @@ Version 1.3:
 1. New build a modulation Table
 2. New way to count number of transponders
 	The max bit rate of each sub-BVT is 100Gb/s
-
 **************************************************
 
 
 
 
-04/19/2019
+## 04/19/2019
 1. Now the Max Bit Rate of request is 100.
 2. SC options are: 100, 50, 25
 3. MF options are: QPSK, 16QAM 
 
+
+## 10/14/2019
+1. Now the traffic generator only generate 3 types of request: 40Gb/s, 100Gb/s, 400Gb/s
+2. SC options are: 200, 100, 50, 25 
+3. MF options are: QPSK, 16QAM, and 64QAM
 
 

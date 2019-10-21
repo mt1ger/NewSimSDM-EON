@@ -1,2 +1,2 @@
 all:
-	g++-8 -pthread Plot.cpp txtParse.cpp -o Plot
+	g++-9 -pthread Plot.cpp txtParse.cpp -o Plot

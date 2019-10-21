@@ -2,6 +2,7 @@
 #define _NETWORK_H
 
 #include <vector>
+#include <cmath>
 // #include "TrafficGenerator.h"
 // #include "RoutingTable.h"
 #include "EventQueue.h"
@@ -18,7 +19,7 @@
 #define DEBUG_print_SortedSC // Sorted Super Channel based on their performance 
 #define DEBUG_collect_EventID_of_blocked_requests //need to collaberate with debug_print_eventid_of_blocked_requests
 #define PRINT_allocation_block_release
-// #define DEBUG_print_SourceAvailableSections
+#define DEBUG_print_SourceAvailableSections
 #endif
 
 #define GB 1 // Guardband
@@ -27,6 +28,7 @@
 // #define MAX_DATASIZE_REQUEST 200 
 #define MAX_DATASIZE_REQUEST 100 
 #define BW_SPECSLOT 12.5
+#define FEC 0.2
 
 using namespace std;
 
@@ -86,9 +88,34 @@ class Network {
 		int MaxNumofSections;
 		double SystemClock;
 
+		// Temp: Delete this after varified
+		long long probe_40 = 0;
+		long long probe_100 = 0;
+		long long probe_400 = 0;
+		//
+		// Ratio of SC in different types
+		double ratio_40 = 0.5;	
+		double ratio_100 = 0.3;
+		double ratio_400 = 0.2;
+		
+		// Number of SC in different types
+		long long request_40 = 0;
+		long long request_100 = 0;
+		long long request_400 = 0;
+		
+		// Probes for blocked SC in different types
+		long long block_40 = 0;
+		long long block_100 = 0;
+		long long block_400 = 0;
+		
 		// Super Channel Allocation Mapping
+		long long Numof200SC6; // number of 64QAM 200Gb/s super channel used per simulation
+		long long Numof200SC4; // number of 16QAM 200Gb/s super channel used per simulation
+		long long Numof200SC2; // number of QPSK 200Gb/s super channel used per simulation
+		long long Numof100SC6; // number of 64QAM 100Gb/s super channel used per simulation
 		long long Numof100SC4; // number of 16QAM 100Gb/s super channel used per simulation
 		long long Numof100SC2; // number of QPSK 100Gb/s super channel used per simulation
+		long long Numof50SC6; // number of 64QAM 50Gb/s super channel used per simulation
 		long long Numof50SC4; // number of 16QAM 50Gb/s super channel used per simulation
 		long long Numof50SC2; // number of QPSK 50Gb/s super channel used per simulation
 		long long Numof25SC; // number of 25Gb/s super channel used per simulation

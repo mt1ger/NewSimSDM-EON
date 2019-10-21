@@ -59,6 +59,19 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 	RoutingTable routingTable (network);	
 	ModulationFormats modulationFormats (circuitRequest, network);
 
+	switch (circuitRequest->DataSize)
+	{
+		case 40:
+			network->probe_40++;
+			break;
+		case 100:
+			network->probe_100++;
+			break;
+		case 400:
+			network->probe_400++;
+			break;
+	}
+
 	/*** VARIABLES ***/
 	vector<int> CircuitRoute;
 	bool AvailableFlag = true;
@@ -181,6 +194,7 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 	CandidateSCs.push_back (50);
 	// CandidateSCs.push_back (75);
 	CandidateSCs.push_back (100);
+	CandidateSCs.push_back (200);
 
 	for (int i = 0; i < CandidateSCs.size (); i++)
 	{
@@ -293,7 +307,6 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 	for (int i = MainLoopIndex; i >= 0; i--)
 	{
 	bool NextSC = false; // True if there is another downgraded SC available. False if there is not 
-		cout << "BEGINNING BitRate and SC is " << BitRate << ' ' << SCSizes[i] << endl; 
 		// AssignedSpectralSection.clear ();
 		// BitRate = circuitRequest->DataSize;
 		// SortedSections = PotentialSections;
@@ -313,11 +326,9 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 						NextSC = true;
 					else 
 						NextSC = false;
-					cout << "i and NextSC " << i << ' ' << NextSC << endl;
 					break;
 				}
 				else if (Index->at (2) - Index->at (1) == SCMSSs.at (i)) {
-					cout << "Equal" << endl;
 					HAssignedSpectralSection.push_back (Index->at (0));
 					HAssignedSpectralSection.push_back (Index->at (1));
 					HAssignedSpectralSection.push_back (Index->at (2));
@@ -384,13 +395,11 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 					Index++;
 		}
 
-cout << "AvailableFlag and BitRate " << AvailableFlag << ' ' << BitRate << endl;
 
 		if (BitRate == 0)
 			break;
 		if (NextSC == true)
 		{
-			cout <<" ????????" << endl;
 			continue;
 		}
 		else 
@@ -409,7 +418,6 @@ cout << "AvailableFlag and BitRate " << AvailableFlag << ' ' << BitRate << endl;
 					i = 1;
 			}
 		}
-		cout << "END BitRate and SC is " << BitRate << ' ' << SCSizes[i] << endl; 
 	}
 
 	/** Segment Limitation Mode **/
@@ -525,7 +533,19 @@ cout << "AvailableFlag and BitRate " << AvailableFlag << ' ' << BitRate << endl;
 		cout << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << endl;
 		#endif
 
-			network->NumofFailedRequests++;
+		network->NumofFailedRequests++;
+		switch (circuitRequest->DataSize)
+		{
+			case 40:	
+				network->block_40++;
+				break;
+			case 100:	
+				network->block_100++;
+				break;
+			case 400:	
+				network->block_400++;
+				break;
+		}
 	}
 	else if (AvailableFlag == true) {
 		int temp = AssignedSpectralSection[0][0];
@@ -576,16 +596,28 @@ cout << "AvailableFlag and BitRate " << AvailableFlag << ' ' << BitRate << endl;
 					network->Numof50SC2++;
 				else if (MFormat.at (AssignedSpectralSection[i][3]) == "16QAM")
 					network->Numof50SC4++;
+				else if (MFormat.at (AssignedSpectralSection[i][3]) == "64QAM")
+					network->Numof50SC6++;
 			}
 			else if (SCSizes.at (AssignedSpectralSection[i][3]) == 100)
 			{
 				if (MFormat.at (AssignedSpectralSection[i][3]) == "QPSK")
-				{
 					network->Numof100SC2++;
-				}
 				else if (MFormat.at (AssignedSpectralSection[i][3]) == "16QAM")
 					network->Numof100SC4++;
+				else if (MFormat.at (AssignedSpectralSection[i][3]) == "64QAM")
+					network->Numof100SC6++;
 			}
+			else if (SCSizes.at (AssignedSpectralSection[i][3]) == 200)
+			{
+				if (MFormat.at (AssignedSpectralSection[i][3]) == "QPSK")
+					network->Numof200SC2++;
+				else if (MFormat.at (AssignedSpectralSection[i][3]) == "16QAM")
+					network->Numof200SC4++;
+				else if (MFormat.at (AssignedSpectralSection[i][3]) == "64QAM")
+					network->Numof200SC6++;
+			}
+
 
 			if (i != AssignedSpectralSection.size () - 1)
 			{

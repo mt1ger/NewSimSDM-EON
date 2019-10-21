@@ -87,7 +87,6 @@ void ResourceAssignment::check_availability_source (unsigned int predecessor, un
 	}
 }
 
-
 void ResourceAssignment::check_availability_link (vector<int> * CircuitRoute) {
 
 	list< vector<int> >::iterator i;
@@ -158,6 +157,19 @@ void ResourceAssignment::sort_sections ( list< vector<int> > &OriginalList)
 void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 	RoutingTable routingTable (network);	
 	ModulationFormats modulationFormats (circuitRequest, network);
+	
+	switch (circuitRequest->DataSize)
+	{
+		case 40:
+			network->probe_40++;
+			break;
+		case 100:
+			network->probe_100++;
+			break;
+		case 400:
+			network->probe_400++;
+			break;
+	}
 
 	/*** VARIABLE DECLARATION ***/
 	vector<int> CircuitRoute;
@@ -176,7 +188,6 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 	int TempCore = -1;
 	int TempSpecSlot = -1;
 	unsigned int core;
-
 
 	CircuitRoute = routingTable.get_shortest_path (circuitRequest->Src, circuitRequest->Dest);
 
@@ -274,7 +285,7 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 	sort_sections (SortedSections);
 	SortedSections1 = SortedSections;
 
-	/*** Sort SC Options by their performance from high to low ***/
+	/**** Sort SC Options by their performance from high to low ****/
 	vector<int> CandidateSCs; // The needed SS for non-modulated Super Channel options
 	vector<int> SCSizes; // The bit rate for each super channel
 	vector<int> SCMSSs; // The needed SS for each modulated super channel
@@ -285,10 +296,12 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 	vector<int> SortedSCSizes; // Sorted index of performance of super channel options
 	list<int> TempRMSSs;
 
+	/*** Get SC infos ***/
 	CandidateSCs.push_back (25);
 	CandidateSCs.push_back (50);
 	// CandidateSCs.push_back (75);
 	CandidateSCs.push_back (100);
+	CandidateSCs.push_back (200);
 
 	for (int i = 0; i < CandidateSCs.size (); i++)
 	{
@@ -300,7 +313,8 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 			SCMSSs.push_back (TempSCSS);
 			MFormat.push_back (MF);
 			mfTimesArray.push_back (mfTimes);
-			int temp = (TempSCSS + 1) * ceil ((double)circuitRequest->DataSize / CandidateSCs[i]);
+			// int temp = (TempSCSS + 1) * ceil (((double)circuitRequest->DataSize / (1 - FEC)) / CandidateSCs[i]);
+			int temp = (TempSCSS + 1) * ceil ((double) circuitRequest->DataSize / CandidateSCs[i]);
 			RMSSs[CandidateSCs.at (i)] = temp;
 			SCSizes.push_back (CandidateSCs[i]);
 		}
@@ -395,6 +409,7 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 			break;
 		}
 	}
+	// BitRate = (double) circuitRequest->DataSize / (1 - FEC);
 	BitRate = circuitRequest->DataSize;
 	for (int i = MainLoopIndex; i >= 0; i--)
 	{
@@ -605,9 +620,8 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 	}
 
 	if (AssignedSpectralSection.size () > network->SectionNumLimitation) AvailableFlag = false;
-	
-	
 
+	/*** Request is blocked ***/
 	if (AvailableFlag == false) {
 		network->NumofDoneRequests++;
 
@@ -622,11 +636,22 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 		cout << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << endl;
 		#endif
 
-			network->NumofFailedRequests++;
+		network->NumofFailedRequests++;
+		switch (circuitRequest->DataSize)
+		{
+			case 40:	
+				network->block_40++;
+				break;
+			case 100:	
+				network->block_100++;
+				break;
+			case 400:	
+				network->block_400++;
+				break;
+		}
 	}
+	/*** Request is allocated ***/
 	else if (AvailableFlag == true) {
-
-		
 		int temp = AssignedSpectralSection[0][0];
 		int CoreCnter = 1;
 		for (int i = 0; i < AssignedSpectralSection.size (); i++) {
@@ -674,6 +699,8 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 					network->Numof50SC2++;
 				else if (MFormat.at (AssignedSpectralSection[i][3]) == "16QAM")
 					network->Numof50SC4++;
+				else if (MFormat.at (AssignedSpectralSection[i][3]) == "64QAM")
+					network->Numof50SC6++;
 			}
 			else if (SCSizes.at (AssignedSpectralSection[i][3]) == 100)
 			{
@@ -681,6 +708,17 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 					network->Numof100SC2++;
 				else if (MFormat.at (AssignedSpectralSection[i][3]) == "16QAM")
 					network->Numof100SC4++;
+				else if (MFormat.at (AssignedSpectralSection[i][3]) == "64QAM")
+					network->Numof100SC6++;
+			}
+			else if (SCSizes.at (AssignedSpectralSection[i][3]) == 200)
+			{
+				if (MFormat.at (AssignedSpectralSection[i][3]) == "QPSK")
+					network->Numof200SC2++;
+				else if (MFormat.at (AssignedSpectralSection[i][3]) == "16QAM")
+					network->Numof200SC4++;
+				else if (MFormat.at (AssignedSpectralSection[i][3]) == "64QAM")
+					network->Numof200SC6++;
 			}
 
 			if (i != AssignedSpectralSection.size () - 1)
@@ -697,6 +735,7 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 			network->TotalSS4Data += AssignedSpectralSection[i][2] - AssignedSpectralSection[i][1];
 			network->TotalSSOccupied += AssignedSpectralSection[i][2] - AssignedSpectralSection[i][1] + 1;
 		}
+		
 		network->NumofAllocatedRequests++;
 		network->NumofSections = network->SectionNumLimitation;
 		network->TotalHoldingTime += circuitRequest->Duration;
@@ -726,7 +765,7 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 	#endif
 }
 
-
+/***** Release Request *****/
 void ResourceAssignment::handle_releases (CircuitRelease * circuitRelease) {
 	#ifdef DEBUG_print_resource_state_on_the_path
 	cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;

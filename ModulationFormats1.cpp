@@ -5,7 +5,7 @@
 using namespace std;
 
 /****************************************
- * Options for Super Channels: 25 50 100
+ * Options for Super Channels: 25 50 100 200
  * Options for Modulation Formats: 
  *     QPSK, 16QAM, 64QAM  
  ****************************************/
@@ -13,7 +13,7 @@ using namespace std;
 
 unsigned int ModulationFormats::spectralslots_computation (unsigned int BitsPerSymbol, unsigned int BitRate) {
 	unsigned int SpectralSlots;
-	SpectralSlots = (double)BitRate / BitsPerSymbol / 12.5; 
+	SpectralSlots = ceil ((double) (BitRate / BitsPerSymbol) / 12.5); 
 	return SpectralSlots;
 }
 
@@ -44,8 +44,8 @@ void ModulationFormats::mf_chosen (vector<int> & shortestPath, unsigned int * oc
 			{
 				m_Format = QPSK;
 				*mfTimes = 2;
-				am_SpectralSlots = spectralslots_computation (*mfTimes, 25);
 				*MF = "QPSK";
+				am_SpectralSlots = spectralslots_computation (*mfTimes, 25);
 			}
 			else
 			{
@@ -59,13 +59,20 @@ void ModulationFormats::mf_chosen (vector<int> & shortestPath, unsigned int * oc
 			if (TotalDist > 4750 && TotalDist <= 11080) {
 				m_Format = QPSK;
 				*mfTimes = 2;
-				am_SpectralSlots = spectralslots_computation (*mfTimes, 50);
 				*MF = "QPSK";
+				am_SpectralSlots = spectralslots_computation (*mfTimes, 50);
 			}
-			else if (TotalDist <= 4750) {
+			else if (TotalDist > 1832 && TotalDist <= 4750) {
 				m_Format = QAM16;
 				*mfTimes = 4;
 				*MF = "16QAM";
+				am_SpectralSlots = spectralslots_computation (*mfTimes, 50);
+			}
+			else if (TotalDist <= 1832)
+			{
+				m_Format = QAM64;	
+				*mfTimes = 6;
+				*MF = "64QAM";
 				am_SpectralSlots = spectralslots_computation (*mfTimes, 50);
 			}
 			else
@@ -100,14 +107,47 @@ void ModulationFormats::mf_chosen (vector<int> & shortestPath, unsigned int * oc
 			if (TotalDist > 2375 && TotalDist <= 5540) {
 				m_Format = QPSK;
 				*mfTimes = 2;
-				am_SpectralSlots = spectralslots_computation (*mfTimes, 100);
 				*MF = "QPSK";
+				am_SpectralSlots = spectralslots_computation (*mfTimes, 100);
 			}
-			else if (TotalDist <= 2375) {
+			else if (TotalDist > 916 && TotalDist <= 2375) {
 				m_Format = QAM16;
 				*mfTimes = 4;
 				*MF = "16QAM";
 				am_SpectralSlots = spectralslots_computation (*mfTimes, 100);
+			}
+			else if (TotalDist <= 916) {
+				m_Format = QAM64;
+				*mfTimes = 6;
+				*MF = "64QAM";
+				am_SpectralSlots = spectralslots_computation (*mfTimes, 100);
+			}
+			else
+			{
+				m_Format = Failure;
+				*mfTimes = -1;
+				*MF = "Fail";
+				am_SpectralSlots = -1; 
+			}
+		break;
+		case 200:
+			if (TotalDist > 1187 && TotalDist <= 2770) {
+				m_Format = QPSK;
+				*mfTimes = 2;
+				am_SpectralSlots = spectralslots_computation (*mfTimes, 200);
+				*MF = "QPSK";
+			}
+			else if (TotalDist > 458 && TotalDist <= 1187) {
+				m_Format = QAM16;
+				*mfTimes = 4;
+				*MF = "16QAM";
+				am_SpectralSlots = spectralslots_computation (*mfTimes, 200);
+			}
+			else if (TotalDist <= 458) {
+				m_Format = QAM64;
+				*mfTimes = 6;
+				*MF = "64QAM";
+				am_SpectralSlots = spectralslots_computation (*mfTimes, 200);
 			}
 			else
 			{
