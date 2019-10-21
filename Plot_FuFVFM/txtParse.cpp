@@ -251,6 +251,9 @@ void txtParse::parse (vector<int> &PotentialCore, vector<int> &PotentialLambda, 
 		Numof50SC2array.push_back (XNumof50SC2array);
 		XNumof50SC2array.clear ();
 
+		Numof25SCarray.push_back (XNumof25SCarray);
+		XNumof25SCarray.clear ();
+
 		Block400array.push_back (XBlock400array);
 		XBlock400array.clear ();
 
@@ -578,9 +581,9 @@ void txtParse::parse (vector<int> &PotentialCore, vector<int> &PotentialLambda, 
 				Snumof50sc4 = Snumof50sc4 + to_string (Numof50SC4array[i][j][k]) + ','; 
 				Snumof50sc2 = Snumof50sc2 + to_string (Numof50SC2array[i][j][k]) + ','; 
 				Snumof25sc = Snumof25sc + to_string (Numof25SCarray[i][j][k]) + ','; 
-				Sblock400 = Sblock400 + to_string (Block400array[i][j][k]);
-				Sblock100 = Sblock100 + to_string (Block100array[i][j][k]);
-				Sblock40 = Sblock40 + to_string (Block40array[i][j][k]);
+				Sblock400 = Sblock400 + to_string (Block400array[i][j][k]) + ',';
+				Sblock100 = Sblock100 + to_string (Block100array[i][j][k]) + ',';
+				Sblock40 = Sblock40 + to_string (Block40array[i][j][k]) + ',';
 			}
 
 			Sbp = Sbp + '\n';
