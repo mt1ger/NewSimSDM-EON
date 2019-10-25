@@ -1,8 +1,9 @@
 CC=g++-9 
 LDFLAGS=-pthread
 CFLAGS=-c 
-EXEC=Sim_FuFVFM
-# EXEC=test_FuFVFM
+# EXEC=Sim_FuFVFM
+EXEC=test_FuFVFM
+# EXEC=test_FuFVFMq
 
 SRCS=Network.cpp\
 	 ModulationFormats1.cpp\

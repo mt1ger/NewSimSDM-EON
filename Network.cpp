@@ -8,8 +8,8 @@
 #include "TrafficGenerator.h"
 #include "Event.h"
 
-#include "ResourceAssignment_FuFBF.h"
-// #include "ResourceAssignment_FuFVF.h"
+// #include "ResourceAssignment_FuFBF.h"
+#include "ResourceAssignment_FuFVF.h"
 // #include "ResourceAssignment_FullyFlex.h"
 // #include "ResourceAssignment_IsolatedCore.h"
 // #include "ResourceAssignment_ICM.h"
@@ -65,11 +65,6 @@ void Network::init () {
 	AvgIntFrag = 0;
 	AvgHybridFrag = 0;
 		
-	Numof100SC4 = 0;
-	Numof100SC2 = 0;
-	Numof50SC4 = 0;
-	Numof50SC2 = 0;
-	Numof25SC = 0;
 
 	request_40 = ceil (NumofRequests * ratio_40);
 	request_100 = (long long) (NumofRequests * ratio_100);
@@ -148,7 +143,7 @@ void Network::simulation () {
 
 
 	cout << "Spectrum Utilization is: " << SpectrumUtilization << endl;
-	cout << "Utilization of different SCs (200: 64QAM, 200: 16QAM, 200: QPSK, 100: 64QAM, 100: 16QAM, 100: QPSK, 50: 64QAM, 50: 16QAM, 50: QPSK, 25): " << Numof200SC6 << ' ' << Numof200SC4 << ' '<< Numof200SC2 << ' '<< Numof100SC6 << ' '<< Numof100SC4 << ' '<< Numof100SC2 << ' '<< Numof50SC6 << ' ' << Numof50SC4 << ' ' <<  Numof50SC2 << ' ' << Numof25SC << endl;
+	cout << "Utilization of different SCs (400: 64QAM, 400: 16QAM, 400: QPSK, 200: 64QAM, 200: 16QAM, 200: QPSK, 100: 64QAM, 100: 16QAM, 100: QPSK, 50: 64QAM, 50: 16QAM, 50: QPSK, 25): "  << Numof400SC6 << ' ' << Numof400SC4 << ' ' << Numof400SC2 << ' ' << Numof200SC6 << ' ' << Numof200SC4 << ' '<< Numof200SC2 << ' '<< Numof100SC6 << ' '<< Numof100SC4 << ' ' << Numof100SC2 << ' ' << Numof50SC6 << ' ' << Numof50SC4 << ' ' <<  Numof50SC2 << ' ' << Numof25SC << endl;
 	cout << "Max # of Transponders used: " << MaxNumofTransponders << endl;
 	cout << "Max # of Sections used for each request: " << MaxNumofSections << endl;
 	cout << "# of blocked requests is " << NumofFailedRequests << endl;

@@ -7,7 +7,7 @@
 // #include "RoutingTable.h"
 #include "EventQueue.h"
 
-#define TESTING
+// #define TESTING
 
 #ifdef TESTING
 // #define DEBUG_print_resource_state_on_the_path
@@ -84,8 +84,8 @@ class Network {
 		long long NumofSS4Data;
 		long long MaxNumofTransponders; // For one time simulation, Maximum Number of Transponders Used Simultaneously
 		long long MaxNumofSS4Data; // For one time simulation, Maximum Number of Data Spectral Slot Occupation
-		int NumofSections;
-		int MaxNumofSections;
+		int NumofSections = 0;
+		int MaxNumofSections = 0;
 		double SystemClock;
 
 		// Temp: Delete this after varified
@@ -94,9 +94,9 @@ class Network {
 		long long probe_400 = 0;
 		//
 		// Ratio of SC in different types
-		double ratio_40 = 0.5;	
-		double ratio_100 = 0.3;
-		double ratio_400 = 0.2;
+		double ratio_40 = 0;	
+		double ratio_100 = 0;
+		double ratio_400 = 1;
 		
 		// Number of SC in different types
 		long long request_40 = 0;
@@ -109,16 +109,19 @@ class Network {
 		long long block_400 = 0;
 		
 		// Super Channel Allocation Mapping
-		long long Numof200SC6; // number of 64QAM 200Gb/s super channel used per simulation
-		long long Numof200SC4; // number of 16QAM 200Gb/s super channel used per simulation
-		long long Numof200SC2; // number of QPSK 200Gb/s super channel used per simulation
-		long long Numof100SC6; // number of 64QAM 100Gb/s super channel used per simulation
-		long long Numof100SC4; // number of 16QAM 100Gb/s super channel used per simulation
-		long long Numof100SC2; // number of QPSK 100Gb/s super channel used per simulation
-		long long Numof50SC6; // number of 64QAM 50Gb/s super channel used per simulation
-		long long Numof50SC4; // number of 16QAM 50Gb/s super channel used per simulation
-		long long Numof50SC2; // number of QPSK 50Gb/s super channel used per simulation
-		long long Numof25SC; // number of 25Gb/s super channel used per simulation
+		long long Numof400SC6 = 0; // number of 64QAM 400Gb/s super channel used per simulation
+		long long Numof400SC4 = 0; // number of 16QAM 400Gb/s super channel used per simulation
+		long long Numof400SC2 = 0; // number of QPSK 400Gb/s super channel used per simulation
+		long long Numof200SC6 = 0; // number of 64QAM 200Gb/s super channel used per simulation
+		long long Numof200SC4 = 0; // number of 16QAM 200Gb/s super channel used per simulation
+		long long Numof200SC2 = 0; // number of QPSK 200Gb/s super channel used per simulation
+		long long Numof100SC6 = 0; // number of 64QAM 100Gb/s super channel used per simulation
+		long long Numof100SC4 = 0; // number of 16QAM 100Gb/s super channel used per simulation
+		long long Numof100SC2 = 0; // number of QPSK 100Gb/s super channel used per simulation
+		long long Numof50SC6 = 0; // number of 64QAM 50Gb/s super channel used per simulation
+		long long Numof50SC4 = 0; // number of 16QAM 50Gb/s super channel used per simulation
+		long long Numof50SC2 = 0; // number of QPSK 50Gb/s super channel used per simulation
+		long long Numof25SC = 0; // number of 25Gb/s super channel used per simulation
 		
 		// Resource Variables
 		vector< vector< vector< vector<bool> > > > SpectralSlots;
@@ -127,7 +130,9 @@ class Network {
 		vector<int> BlockedRequests;
 		
 		
+		double MaxDist = 0;
 	private:
+
 };
 
 #endif

@@ -7,16 +7,16 @@
 using namespace std;
 
 void txtParse::parse (vector<int> &PotentialCore, vector<int> &PotentialLambda, vector<int> &PotentialSeed, string path) {
-	string IFileName, IFile, OFileName1, OFileName2, OFileName3, OFileName4, OFileName5, OFileName6, OFileName7, OFileName8, OFileName9, OFileName10, OFileName11, OFileName12, OFileName13, OFileName14, OFileName15, OFileName16, OFileName17, OFileName18, OFileName19, OFileName20, OFileName21, OFileName22;
+	string IFileName, IFile, OFileName1, OFileName2, OFileName3, OFileName4, OFileName5, OFileName6, OFileName7, OFileName8, OFileName9, OFileName10, OFileName11, OFileName12, OFileName13, OFileName14, OFileName15, OFileName16, OFileName17, OFileName18, OFileName19, OFileName20, OFileName21, OFileName22, OFileName23, OFileName24, OFileName25;
 	IFile = "Plot";
 	IFileName = path + IFile + ".txt";
 	ifstream Fin (IFileName); 
 
-	string Core, Lambda, Seed, BP, NoT, CpR, HTpR, TpR, GBpR, AvgIFpR, AvgEFpR, AvgHFpR, Numof200SC6, Numof200SC4, Numof200SC2, Numof100SC6, Numof100SC4, Numof100SC2, Numof50SC6, Numof50SC4, Numof50SC2, Numof25SC, Block400, Block100, Block40;
-	double NCore, NLambda, NSeed, NBP, NNoT, NCpR, NHTpR, NTpR, NGBpR, NAvgIFpR, NAvgEFpR, NAvgHFpR, NNumof200SC6, NNumof200SC4, NNumof200SC2, NNumof100SC6, NNumof100SC4, NNumof100SC2, NNumof50SC6, NNumof50SC4, NNumof50SC2, NNumof25SC, NBlock400, NBlock100, NBlock40;
-	vector< vector< vector<double> > > BParray, NoTarray, CpRarray, HTpRarray, TpRarray, GBpRarray, AvgIFpRarray, AvgEFpRarray, AvgHFpRarray, Numof200SC6array, Numof200SC4array, Numof200SC2array, Numof100SC6array, Numof100SC4array, Numof100SC2array, Numof50SC6array, Numof50SC4array, Numof50SC2array, Numof25SCarray, Block400array, Block100array, Block40array;
-	vector < vector<double> > XBParray, XNoTarray, XCpRarray, XHTpRarray, XTpRarray, XGBpRarray, XAvgIFpRarray, XAvgEFpRarray, XAvgHFpRarray, XNumof200SC6array, XNumof200SC4array, XNumof200SC2array, XNumof100SC6array, XNumof100SC4array, XNumof100SC2array, XNumof50SC6array, XNumof50SC4array, XNumof50SC2array, XNumof25SCarray, XBlock400array, XBlock100array, XBlock40array;
-	vector<double> YBParray, YNoTarray, YCpRarray, YHTpRarray, YTpRarray, YGBpRarray, YAvgIFpRarray, YAvgEFpRarray, YAvgHFpRarray, YNumof200SC6array, YNumof200SC4array, YNumof200SC2array, YNumof100SC6array, YNumof100SC4array, YNumof100SC2array, YNumof50SC6array, YNumof50SC4array, YNumof50SC2array, YNumof25SCarray, YBlock400array, YBlock100array, YBlock40array;
+	string Core, Lambda, Seed, BP, NoT, CpR, HTpR, TpR, GBpR, AvgIFpR, AvgEFpR, AvgHFpR, Numof400SC6, Numof400SC4, Numof400SC2, Numof200SC6, Numof200SC4, Numof200SC2, Numof100SC6, Numof100SC4, Numof100SC2, Numof50SC6, Numof50SC4, Numof50SC2, Numof25SC, Block400, Block100, Block40;
+	double NCore, NLambda, NSeed, NBP, NNoT, NCpR, NHTpR, NTpR, NGBpR, NAvgIFpR, NAvgEFpR, NAvgHFpR, NNumof400SC6, NNumof400SC4, NNumof400SC2, NNumof200SC6, NNumof200SC4, NNumof200SC2, NNumof100SC6, NNumof100SC4, NNumof100SC2, NNumof50SC6, NNumof50SC4, NNumof50SC2, NNumof25SC, NBlock400, NBlock100, NBlock40;
+	vector< vector< vector<double> > > BParray, NoTarray, CpRarray, HTpRarray, TpRarray, GBpRarray, AvgIFpRarray, AvgEFpRarray, AvgHFpRarray, Numof400SC6array, Numof400SC4array, Numof400SC2array, Numof200SC6array, Numof200SC4array, Numof200SC2array, Numof100SC6array, Numof100SC4array, Numof100SC2array, Numof50SC6array, Numof50SC4array, Numof50SC2array, Numof25SCarray, Block400array, Block100array, Block40array;
+	vector < vector<double> > XBParray, XNoTarray, XCpRarray, XHTpRarray, XTpRarray, XGBpRarray, XAvgIFpRarray, XAvgEFpRarray, XAvgHFpRarray, XNumof400SC6array, XNumof400SC4array, XNumof400SC2array, XNumof200SC6array, XNumof200SC4array, XNumof200SC2array, XNumof100SC6array, XNumof100SC4array, XNumof100SC2array, XNumof50SC6array, XNumof50SC4array, XNumof50SC2array, XNumof25SCarray, XBlock400array, XBlock100array, XBlock40array;
+	vector<double> YBParray, YNoTarray, YCpRarray, YHTpRarray, YTpRarray, YGBpRarray, YAvgIFpRarray, YAvgEFpRarray, YAvgHFpRarray, YNumof400SC6array, YNumof400SC4array, YNumof400SC2array, YNumof200SC6array, YNumof200SC4array, YNumof200SC2array, YNumof100SC6array, YNumof100SC4array, YNumof100SC2array, YNumof50SC6array, YNumof50SC4array, YNumof50SC2array, YNumof25SCarray, YBlock400array, YBlock100array, YBlock40array;
 
 
 	for (int i = 0; i < PotentialCore.size (); i++) {
@@ -92,6 +92,30 @@ void txtParse::parse (vector<int> &PotentialCore, vector<int> &PotentialLambda, 
 			}
 			XAvgHFpRarray.push_back (YAvgHFpRarray);
 			YAvgHFpRarray.clear ();
+
+			YNumof400SC6array.push_back (PotentialCore[i]);
+			YNumof400SC6array.push_back (PotentialLambda[k]);
+			for (int i = 0; i < PotentialSeed.size (); i++) {
+				YNumof400SC6array.push_back (-1);
+			}
+			XNumof400SC6array.push_back (YNumof400SC6array);
+			YNumof400SC6array.clear ();
+
+			YNumof400SC4array.push_back (PotentialCore[i]);
+			YNumof400SC4array.push_back (PotentialLambda[k]);
+			for (int i = 0; i < PotentialSeed.size (); i++) {
+				YNumof400SC4array.push_back (-1);
+			}
+			XNumof400SC4array.push_back (YNumof400SC4array);
+			YNumof400SC4array.clear ();
+
+			YNumof400SC2array.push_back (PotentialCore[i]);
+			YNumof400SC2array.push_back (PotentialLambda[k]);
+			for (int i = 0; i < PotentialSeed.size (); i++) {
+				YNumof400SC2array.push_back (-1);
+			}
+			XNumof400SC2array.push_back (YNumof400SC2array);
+			YNumof400SC2array.clear ();
 
 			YNumof200SC6array.push_back (PotentialCore[i]);
 			YNumof200SC6array.push_back (PotentialLambda[k]);
@@ -224,6 +248,15 @@ void txtParse::parse (vector<int> &PotentialCore, vector<int> &PotentialLambda, 
 		AvgHFpRarray.push_back (XAvgHFpRarray);
 		XAvgHFpRarray.clear ();
 
+		Numof400SC6array.push_back (XNumof400SC6array);
+		XNumof400SC6array.clear ();
+
+		Numof400SC4array.push_back (XNumof400SC4array);
+		XNumof400SC4array.clear ();
+
+		Numof400SC2array.push_back (XNumof400SC2array);
+		XNumof400SC2array.clear ();
+
 		Numof200SC6array.push_back (XNumof200SC6array);
 		XNumof200SC6array.clear ();
 
@@ -245,11 +278,14 @@ void txtParse::parse (vector<int> &PotentialCore, vector<int> &PotentialLambda, 
 		Numof50SC6array.push_back (XNumof50SC6array);
 		XNumof50SC6array.clear ();
 
-		Numof50SC4array.push_back (XNumof50SC4array);
+		Numof50SC4array.push_back (XNumof50SC4array); 
 		XNumof50SC4array.clear ();
 
 		Numof50SC2array.push_back (XNumof50SC2array);
 		XNumof50SC2array.clear ();
+
+		Numof25SCarray.push_back (XNumof25SCarray);
+		XNumof25SCarray.clear ();
 
 		Block400array.push_back (XBlock400array);
 		XBlock400array.clear ();
@@ -279,6 +315,9 @@ void txtParse::parse (vector<int> &PotentialCore, vector<int> &PotentialLambda, 
 		Fin >> AvgIFpR;
 		Fin >> AvgEFpR;
 		Fin >> AvgHFpR;
+		Fin >> Numof400SC6;
+		Fin >> Numof400SC4;
+		Fin >> Numof400SC2;
 		Fin >> Numof200SC6;
 		Fin >> Numof200SC4;
 		Fin >> Numof200SC2;
@@ -306,6 +345,9 @@ void txtParse::parse (vector<int> &PotentialCore, vector<int> &PotentialLambda, 
 		NAvgIFpR = stof (AvgIFpR);
 		NAvgEFpR = stof (AvgEFpR);
 		NAvgHFpR = stof (AvgHFpR);
+		NNumof400SC6 = stof (Numof400SC6);
+		NNumof400SC4 = stof (Numof400SC4);
+		NNumof400SC2 = stof (Numof400SC2);
 		NNumof200SC6 = stof (Numof200SC6);
 		NNumof200SC4 = stof (Numof200SC4);
 		NNumof200SC2 = stof (Numof200SC2);
@@ -342,6 +384,9 @@ void txtParse::parse (vector<int> &PotentialCore, vector<int> &PotentialLambda, 
 		AvgIFpRarray[CoreCnt][LambdaCnt].at (SeedCnt + 2) = NAvgIFpR;
 		AvgEFpRarray[CoreCnt][LambdaCnt].at (SeedCnt + 2) = NAvgEFpR;
 		AvgHFpRarray[CoreCnt][LambdaCnt].at (SeedCnt + 2) = NAvgHFpR;
+		Numof400SC6array[CoreCnt][LambdaCnt].at (SeedCnt + 2) = NNumof400SC6;
+		Numof400SC4array[CoreCnt][LambdaCnt].at (SeedCnt + 2) = NNumof400SC4;
+		Numof400SC2array[CoreCnt][LambdaCnt].at (SeedCnt + 2) = NNumof400SC2;
 		Numof200SC6array[CoreCnt][LambdaCnt].at (SeedCnt + 2) = NNumof200SC6;
 		Numof200SC4array[CoreCnt][LambdaCnt].at (SeedCnt + 2) = NNumof200SC4;
 		Numof200SC2array[CoreCnt][LambdaCnt].at (SeedCnt + 2) = NNumof200SC2;
@@ -371,6 +416,9 @@ void txtParse::parse (vector<int> &PotentialCore, vector<int> &PotentialLambda, 
 			double TempAvgIFpR = 0;
 			double TempAvgEFpR = 0;
 			double TempAvgHFpR = 0;
+			double TempNumof400SC6= 0;
+			double TempNumof400SC4= 0;
+			double TempNumof400SC2= 0;
 			double TempNumof200SC6= 0;
 			double TempNumof200SC4= 0;
 			double TempNumof200SC2= 0;
@@ -395,6 +443,9 @@ void txtParse::parse (vector<int> &PotentialCore, vector<int> &PotentialLambda, 
 				TempAvgIFpR += AvgIFpRarray[i][j][k];
 				TempAvgEFpR += AvgEFpRarray[i][j][k];
 				TempAvgHFpR += AvgHFpRarray[i][j][k];
+				TempNumof400SC6 += Numof400SC6array[i][j][k];
+				TempNumof400SC4 += Numof400SC4array[i][j][k];
+				TempNumof400SC2 += Numof400SC2array[i][j][k];
 				TempNumof200SC6 += Numof200SC6array[i][j][k];
 				TempNumof200SC4 += Numof200SC4array[i][j][k];
 				TempNumof200SC2 += Numof200SC2array[i][j][k];
@@ -419,6 +470,9 @@ void txtParse::parse (vector<int> &PotentialCore, vector<int> &PotentialLambda, 
 			TempAvgIFpR = TempAvgIFpR / Cnt;
 			TempAvgEFpR = TempAvgEFpR / Cnt;
 			TempAvgHFpR = TempAvgHFpR / Cnt;
+			TempNumof400SC6 = TempNumof400SC6 / Cnt;
+			TempNumof400SC4 = TempNumof400SC4 / Cnt;
+			TempNumof400SC2 = TempNumof400SC2 / Cnt;
 			TempNumof200SC6 = TempNumof200SC6 / Cnt;
 			TempNumof200SC4 = TempNumof200SC4 / Cnt;
 			TempNumof200SC2 = TempNumof200SC2 / Cnt;
@@ -442,6 +496,9 @@ void txtParse::parse (vector<int> &PotentialCore, vector<int> &PotentialLambda, 
 			AvgIFpRarray[i][j].push_back (TempAvgIFpR);
 			AvgEFpRarray[i][j].push_back (TempAvgEFpR);
 			AvgHFpRarray[i][j].push_back (TempAvgHFpR);
+			Numof400SC6array[i][j].push_back (TempNumof400SC6);
+			Numof400SC4array[i][j].push_back (TempNumof400SC4);
+			Numof400SC2array[i][j].push_back (TempNumof400SC2);
 			Numof200SC6array[i][j].push_back (TempNumof200SC6);
 			Numof200SC4array[i][j].push_back (TempNumof200SC4);
 			Numof200SC2array[i][j].push_back (TempNumof200SC2);
@@ -468,19 +525,22 @@ void txtParse::parse (vector<int> &PotentialCore, vector<int> &PotentialLambda, 
 	OFileName7 = path + IFile + "_AvgIFpR.csv";
 	OFileName8 = path + IFile + "_AvgEFpR.csv";
 	OFileName9 = path + IFile + "_AvgHFpR.csv";
-	OFileName10 = path + IFile + "_Numof200SC6.csv";
-	OFileName11 = path + IFile + "_Numof200SC4.csv";
-	OFileName12 = path + IFile + "_Numof200SC2.csv";
-	OFileName13 = path + IFile + "_Numof100SC6.csv";
-	OFileName14 = path + IFile + "_Numof100SC4.csv";
-	OFileName15 = path + IFile + "_Numof100SC2.csv";
-	OFileName16 = path + IFile + "_Numof50SC6.csv";
-	OFileName17 = path + IFile + "_Numof50SC4.csv";
-	OFileName18 = path + IFile + "_Numof50SC2.csv";
-	OFileName19 = path + IFile + "_Numof25SC.csv";
-	OFileName20 = path + IFile + "_Block400.csv";
-	OFileName20 = path + IFile + "_Block100.csv";
-	OFileName22 = path + IFile + "_Block40.csv";
+	OFileName10 = path + IFile + "_Numof400SC6.csv";
+	OFileName11 = path + IFile + "_Numof400SC4.csv";
+	OFileName12 = path + IFile + "_Numof400SC2.csv";
+	OFileName13 = path + IFile + "_Numof200SC6.csv";
+	OFileName14 = path + IFile + "_Numof200SC4.csv";
+	OFileName15 = path + IFile + "_Numof200SC2.csv";
+	OFileName16 = path + IFile + "_Numof100SC6.csv";
+	OFileName17 = path + IFile + "_Numof100SC4.csv";
+	OFileName18 = path + IFile + "_Numof100SC2.csv";
+	OFileName19 = path + IFile + "_Numof50SC6.csv";
+	OFileName20 = path + IFile + "_Numof50SC4.csv";
+	OFileName21 = path + IFile + "_Numof50SC2.csv";
+	OFileName22 = path + IFile + "_Numof25SC.csv";
+	OFileName23 = path + IFile + "_Block400.csv";
+	OFileName24 = path + IFile + "_Block100.csv";
+	OFileName25 = path + IFile + "_Block40.csv";
 	
 	ofstream Fbp (OFileName1);
 	ofstream Fnot (OFileName2);
@@ -491,19 +551,22 @@ void txtParse::parse (vector<int> &PotentialCore, vector<int> &PotentialLambda, 
 	ofstream Favgifpr (OFileName7);
 	ofstream Favgefpr (OFileName8);
 	ofstream Favghfpr (OFileName9);
-	ofstream Fnumof200sc6 (OFileName10);
-	ofstream Fnumof200sc4 (OFileName11);
-	ofstream Fnumof200sc2 (OFileName12);
-	ofstream Fnumof100sc6 (OFileName13);
-	ofstream Fnumof100sc4 (OFileName14);
-	ofstream Fnumof100sc2 (OFileName15);
-	ofstream Fnumof50sc6 (OFileName16);
-	ofstream Fnumof50sc4 (OFileName17);
-	ofstream Fnumof50sc2 (OFileName18);
-	ofstream Fnumof25sc (OFileName19);
-	ofstream Fblock400 (OFileName20);
-	ofstream Fblock100 (OFileName21);
-	ofstream Fblock40 (OFileName22);
+	ofstream Fnumof400sc6 (OFileName10);
+	ofstream Fnumof400sc4 (OFileName11);
+	ofstream Fnumof400sc2 (OFileName12);
+	ofstream Fnumof200sc6 (OFileName13);
+	ofstream Fnumof200sc4 (OFileName14);
+	ofstream Fnumof200sc2 (OFileName15);
+	ofstream Fnumof100sc6 (OFileName16);
+	ofstream Fnumof100sc4 (OFileName17);
+	ofstream Fnumof100sc2 (OFileName18);
+	ofstream Fnumof50sc6 (OFileName19);
+	ofstream Fnumof50sc4 (OFileName20);
+	ofstream Fnumof50sc2 (OFileName21);
+	ofstream Fnumof25sc (OFileName22);
+	ofstream Fblock400 (OFileName23);
+	ofstream Fblock100 (OFileName24);
+	ofstream Fblock40 (OFileName25);
 
 	string Sseed;
 	for (int i = 0; i < PotentialSeed.size (); i++) {
@@ -519,6 +582,9 @@ void txtParse::parse (vector<int> &PotentialCore, vector<int> &PotentialLambda, 
 	Favgifpr << Sseed;
 	Favgefpr << Sseed;
 	Favghfpr << Sseed;
+	Fnumof400sc6 << Sseed;
+	Fnumof400sc4 << Sseed;
+	Fnumof400sc2 << Sseed;
 	Fnumof200sc6 << Sseed;
 	Fnumof200sc4 << Sseed;
 	Fnumof200sc2 << Sseed;
@@ -544,6 +610,9 @@ void txtParse::parse (vector<int> &PotentialCore, vector<int> &PotentialLambda, 
 			string Savgifpr;
 			string Savgefpr;
 			string Savghfpr;
+			string Snumof400sc6;
+			string Snumof400sc4;
+			string Snumof400sc2;
 			string Snumof200sc6;
 			string Snumof200sc4;
 			string Snumof200sc2;
@@ -568,6 +637,9 @@ void txtParse::parse (vector<int> &PotentialCore, vector<int> &PotentialLambda, 
 				Savgifpr = Savgifpr + to_string (AvgIFpRarray[i][j][k]) + ','; 
 				Savgefpr = Savgefpr + to_string (AvgEFpRarray[i][j][k]) + ','; 
 				Savghfpr = Savghfpr + to_string (AvgHFpRarray[i][j][k]) + ','; 
+				Snumof400sc6 = Snumof400sc6 + to_string (Numof400SC6array[i][j][k]) + ','; 
+				Snumof400sc4 = Snumof400sc4 + to_string (Numof400SC4array[i][j][k]) + ','; 
+				Snumof400sc2 = Snumof400sc2 + to_string (Numof400SC2array[i][j][k]) + ','; 
 				Snumof200sc6 = Snumof200sc6 + to_string (Numof200SC6array[i][j][k]) + ','; 
 				Snumof200sc4 = Snumof200sc4 + to_string (Numof200SC4array[i][j][k]) + ','; 
 				Snumof200sc2 = Snumof200sc2 + to_string (Numof200SC2array[i][j][k]) + ','; 
@@ -578,9 +650,9 @@ void txtParse::parse (vector<int> &PotentialCore, vector<int> &PotentialLambda, 
 				Snumof50sc4 = Snumof50sc4 + to_string (Numof50SC4array[i][j][k]) + ','; 
 				Snumof50sc2 = Snumof50sc2 + to_string (Numof50SC2array[i][j][k]) + ','; 
 				Snumof25sc = Snumof25sc + to_string (Numof25SCarray[i][j][k]) + ','; 
-				Sblock400 = Sblock400 + to_string (Block400array[i][j][k]);
-				Sblock100 = Sblock100 + to_string (Block100array[i][j][k]);
-				Sblock40 = Sblock40 + to_string (Block40array[i][j][k]);
+				Sblock400 = Sblock400 + to_string (Block400array[i][j][k]) + ',';
+				Sblock100 = Sblock100 + to_string (Block100array[i][j][k]) + ',';
+				Sblock40 = Sblock40 + to_string (Block40array[i][j][k]) + ',';
 			}
 
 			Sbp = Sbp + '\n';
@@ -592,6 +664,9 @@ void txtParse::parse (vector<int> &PotentialCore, vector<int> &PotentialLambda, 
 			Savgifpr = Savgifpr + '\n';
 			Savgefpr = Savgefpr + '\n';
 			Savghfpr = Savghfpr + '\n';
+			Snumof400sc6 = Snumof400sc6 + '\n';
+			Snumof400sc4 = Snumof400sc4 + '\n';
+			Snumof400sc2 = Snumof400sc2 + '\n';
 			Snumof200sc6 = Snumof200sc6 + '\n';
 			Snumof200sc4 = Snumof200sc4 + '\n';
 			Snumof200sc2 = Snumof200sc2 + '\n';
@@ -615,6 +690,9 @@ void txtParse::parse (vector<int> &PotentialCore, vector<int> &PotentialLambda, 
 			Favgifpr << Savgifpr;
 			Favgefpr << Savgefpr;
 			Favghfpr << Savghfpr;
+			Fnumof400sc6 << Snumof400sc6;
+			Fnumof400sc4 << Snumof400sc4;
+			Fnumof400sc2 << Snumof400sc2;
 			Fnumof200sc6 << Snumof200sc6;
 			Fnumof200sc4 << Snumof200sc4;
 			Fnumof200sc2 << Snumof200sc2;
@@ -641,6 +719,9 @@ void txtParse::parse (vector<int> &PotentialCore, vector<int> &PotentialLambda, 
 	Favgifpr.close ();
 	Favgefpr.close ();
 	Favghfpr.close ();
+	Fnumof400sc6.close ();
+	Fnumof400sc4.close ();
+	Fnumof400sc2.close ();
 	Fnumof200sc6.close ();
 	Fnumof200sc4.close ();
 	Fnumof200sc2.close ();

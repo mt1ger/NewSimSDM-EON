@@ -36,6 +36,10 @@ void ModulationFormats::mf_chosen (vector<int> & shortestPath, unsigned int * oc
 		TotalDist = TotalDist + Dist;
 	}
 
+	// cout << "The total distance is " << TotalDist << endl;
+	// if (TotalDist > network->MaxDist) network->MaxDist = TotalDist;
+	// cout << "The max distance is " << network->MaxDist << endl;
+
 	SC = * dataSize;
 	switch (SC) 
 	{
@@ -157,6 +161,32 @@ void ModulationFormats::mf_chosen (vector<int> & shortestPath, unsigned int * oc
 				am_SpectralSlots = -1; 
 			}
 		break;
+		case 400:
+			if (TotalDist > 594 && TotalDist <= 1385) {
+				m_Format = QPSK;
+				*mfTimes = 2;
+				am_SpectralSlots = spectralslots_computation (*mfTimes, 400);
+				*MF = "QPSK";
+			}
+			else if (TotalDist > 229 && TotalDist <= 594) {
+				m_Format = QAM16;
+				*mfTimes = 4;
+				*MF = "16QAM";
+				am_SpectralSlots = spectralslots_computation (*mfTimes, 400);
+			}
+			else if (TotalDist <= 229) {
+				m_Format = QAM64;
+				*mfTimes = 6;
+				*MF = "64QAM";
+				am_SpectralSlots = spectralslots_computation (*mfTimes, 400);
+			}
+			else
+			{
+				m_Format = Failure;
+				*mfTimes = -1;
+				*MF = "Fail";
+				am_SpectralSlots = -1; 
+			}
 	}
 
 	*occupiedSpectralSlots = am_SpectralSlots;
